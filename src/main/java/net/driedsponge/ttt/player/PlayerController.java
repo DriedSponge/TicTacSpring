@@ -21,6 +21,12 @@ public class PlayerController {
         return playerService.getPlayers();
     }
 
+    @GetMapping("/me")
+    public Player getPlayer(@RequestHeader("") Player player) {
+        return playerService.getPlayer(player.getId(), );
+    }
+
+
     @PostMapping
     public Player newPlayer(@RequestBody Player player){
         return player;
