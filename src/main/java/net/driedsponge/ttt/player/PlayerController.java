@@ -22,8 +22,9 @@ public class PlayerController {
     }
 
     @GetMapping("/me")
-    public Player getPlayer(@RequestHeader("") Player player) {
-        return playerService.getPlayer(player.getId(), );
+    public Player getPlayer(@RequestHeader("Authorization") String bearer, @RequestBody Player player) {
+        System.out.println(bearer);
+        return playerService.getPlayer(player.getId(), bearer);
     }
 
 
