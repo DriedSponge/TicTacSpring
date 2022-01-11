@@ -9,7 +9,7 @@
       axios.post("http://localhost:8080/v1/player/login",{
         name: name
       }).then(res => {
-        console.log(res);
+        console.log(res.data.token);
       })
     } else {
       console.log("Invalid name");
