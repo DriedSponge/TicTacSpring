@@ -28,8 +28,10 @@ public class PlayerController {
     }
 
 
-    @PostMapping
+    @CrossOrigin(origins = "http://localhost:3000/")
+    @PostMapping("login")
     public Player newPlayer(@RequestBody Player player){
+
         return player;
     }
 }

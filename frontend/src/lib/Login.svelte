@@ -6,7 +6,11 @@
   function login(e) {
     console.log(name);
     if (name.length > 0) {
-      console.log("valid name");
+      axios.post("http://localhost:8080/v1/player/login",{
+        name: name
+      }).then(res => {
+        console.log(res);
+      })
     } else {
       console.log("Invalid name");
     }
