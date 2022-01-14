@@ -1,6 +1,5 @@
 <script lang="ts">
   import axios from "axios";
-
   export const prerender = true;
   let name: string = "";
   function login(e) {
@@ -10,6 +9,9 @@
         name: name
       }).then(res => {
         console.log(res.data.token);
+        window.localStorage.setItem("jwt",res.data.token)
+        window.localStorage.setItem("name",res.data.name)
+        window.localStorage.setItem("id",res.data.id)
       })
     } else {
       console.log("Invalid name");
