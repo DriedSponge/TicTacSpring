@@ -9,9 +9,7 @@
         name: name
       }).then(res => {
         console.log(res.data.token);
-        window.localStorage.setItem("jwt",res.data.token)
-        window.localStorage.setItem("name",res.data.name)
-        window.localStorage.setItem("id",res.data.id)
+        window.localStorage.setItem("token")
       })
     } else {
       console.log("Invalid name");
