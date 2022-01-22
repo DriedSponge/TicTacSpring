@@ -14,7 +14,7 @@
 <h1 class="text-center text-5xl font-bold my-5 text-white">Tic Tac Toe!</h1>
 <br />
 <div class="container my-auto px-2 flex-grow">
-  {#if window.localStorage.getItem("jwt") == null}
+  {#if window.localStorage.getItem("token") == null}
     <Login />
   {:else}
     <LobbyController />
