@@ -1,13 +1,12 @@
 <script lang="ts">
-  document.getElementById("myBody").addEventListener('click', event=>{
-    
-  })
   import { name as n } from "$lib/session";
   import axios from "axios";
   export const prerender = true;
   let name: string = "";
+  let error: string = "";
   function login(e) {
     console.log(name);
+    error=""
     if (name.length > 0) {
       axios
         .post("http://localhost:8080/v1/player/login", {
@@ -19,6 +18,7 @@
           n.set(res.data.name);
         });
     } else {
+      error = "Your name is invalid!"
       console.log("Invalid name");
     }
   }
@@ -40,6 +40,14 @@
     </div>
   </div>
 </form>
+{#if error.length >0}
+<div class="container bg-white py-3 my-3 rounded-lg shadow-md">
+  <div class="text-red-500 text-center font-bold text-lg">
+    An error has occured: {error}
+  </div>
+</div>
+  
+{/if}
 
 <style lang="postcss">
   button {
