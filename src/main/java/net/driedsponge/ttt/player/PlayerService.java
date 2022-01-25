@@ -1,6 +1,9 @@
 package net.driedsponge.ttt.player;
 
+import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +26,11 @@ public class PlayerService {
     }
 
     public Player getPlayer(Long id, String token){
+
         Player player =  players.get(id);
-        if(player.getToken().endsWith(token)) return player;
-        return null;
+        if(player != null && player.getToken().endsWith(token)) return player;
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Player not found. Please login."
+        );
     }
 }

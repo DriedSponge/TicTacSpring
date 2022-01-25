@@ -22,16 +22,17 @@ public class PlayerController {
     }
 
     @GetMapping("/me")
-    public Player getPlayer(@RequestHeader("Authorization") String bearer, @RequestBody Player player) {
+    public Player getPlayer(@RequestHeader("Authorization") String bearer, @RequestBody MeRequest id) {
+        System.out.println(id.getId());
         System.out.println(bearer);
-        return playerService.getPlayer(player.getId(), bearer);
+        return playerService.getPlayer(id.getId(), bearer);
     }
 
 
     @CrossOrigin(origins = "http://localhost:3000/")
     @PostMapping("login")
     public Player newPlayer(@RequestBody Player player){
-
+        playerService.addPlayer(player);
         return player;
     }
 }
