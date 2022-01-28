@@ -6,30 +6,19 @@ import java.util.Random;
 import java.util.UUID;
 
 public class Player {
-    private final Long id;
     private String name;
     private UUID token;
 
     public Player(@JsonProperty("name") String name) {
-        Long id1;
         this.name = name;
-
-        long id = new Random().nextLong();
-        if(id < 0L){
-            id = id * (-1L);
-        }
-        this.id = id;
         this.token = UUID.randomUUID();
     }
 
     @Override
     public String toString() {
-        return String.format("%s (%s)",this.name, this.id);
+        return this.name;
     }
 
-    public Long getId() {
-        return id;
-    }
 
     public String getName() {
         return name;

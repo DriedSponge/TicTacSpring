@@ -5,16 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PlayerService {
 
-    private HashMap<Long,Player> players = new HashMap<Long, Player>();
-
+    private Map<String,Player> players = new HashMap<String, Player>();
     public List<Player> getPlayers() {
         return List.of(
                 new Player("Jordan")
@@ -22,13 +18,12 @@ public class PlayerService {
     }
 
     public void addPlayer(Player player){
-        players.put(player.getId(),player);
+        players.put(player.getToken(),player);
     }
 
-    public Player getPlayer(Long id, String token){
-
-        Player player =  players.get(id);
-        if(player != null && player.getToken().endsWith(token)) return player;
+    public Player getPlayer(String token){
+        Player player =  players.get(token.split(" ")[1]);
+        if(player != null) return player;
         throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Player not found. Please login."
         );

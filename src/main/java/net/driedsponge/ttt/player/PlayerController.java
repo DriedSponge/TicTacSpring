@@ -17,15 +17,14 @@ public class PlayerController {
     }
 
     @GetMapping("/")
-    public List<Player> getPlayer(@RequestParam(value = "name", defaultValue = "World") String name) {
+    public List<Player> getPlayers(@RequestParam(value = "name", defaultValue = "World") String name) {
         return playerService.getPlayers();
     }
 
+    @CrossOrigin(origins = "http://localhost:3000/")
     @GetMapping("/me")
-    public Player getPlayer(@RequestHeader("Authorization") String bearer, @RequestBody MeRequest id) {
-        System.out.println(id.getId());
-        System.out.println(bearer);
-        return playerService.getPlayer(id.getId(), bearer);
+    public Player getPlayer(@RequestHeader("Authorization") String bearer) {
+        return playerService.getPlayer(bearer);
     }
 
 
