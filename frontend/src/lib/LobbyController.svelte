@@ -15,6 +15,7 @@
         <div class="flex flex-col">
           <div class="w-full">
             <input
+              inputmode="numeric"
               name="id"
               id="id"
               maxlength="30"
