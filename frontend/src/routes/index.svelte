@@ -1,20 +1,28 @@
-<script context="module" lang="ts">
-  import { name } from "$lib/session";
-  import LobbyController from "$lib/LobbyController.svelte";
+<script>
+  import { onMount } from "svelte";
+  import auth from "$lib/authService";
+  import { isAuthenticated, user, tasks } from "$lib/store";
   import Login from "$lib/Login.svelte";
-  import axios from "axios";
-  export const prerender = false;
-  if (typeof localStorage !== 'undefined' && localStorage.getItem("token")) {
-    axios
-      .get("http://localhost:8080/v1/player/me", {
-        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-      })
-      .then((res) => {
-        name.set(res.data.name);
-      })
-      .catch((error) => {
-        localStorage.removeItem("token");
-      });
+
+  let auth0Client;
+
+  // onMount(async () => {
+  //   auth0Client = await auth.createClient();
+  //   isAuthenticated.set(await auth0Client.isAuthenticated());
+  //   user.set(await auth0Client.getUser());
+  // });
+
+  async function createclient(){
+    auth0Client = await auth.createClient();
+    isAuthenticated.set(await auth0Client.isAuthenticated());
+    user.set(await auth0Client.getUser());
+  }
+  function login() {
+    auth.loginWithPopup(auth0Client);
+  }
+
+  function logout() {
+    auth.logout(auth0Client);
   }
 </script>
 
@@ -22,12 +30,20 @@
   <title>Tic Tac Toe!</title>
 </svelte:head>
 
-<h1 class="text-center md:text-5xl text-4xl font-bold my-5 text-white italic under">Tic Tac Toe!</h1>
+<h1
+  class="text-center md:text-5xl text-4xl font-bold my-5 text-white italic under"
+>
+  Tic Tac Toe!
+</h1>
 <br />
 <div class="container my-auto px-2 flex-grow">
-  {#if $name.length == 0}
-    <Login />
-  {:else}
-    <LobbyController />
-  {/if}
+  {#await createclient()}
+    <p>waiting for the promise to resolve...</p>
+  {:then val}
+    {#if !$isAuthenticated}
+      <Login />
+    {:else}
+      {$user.picture}
+    {/if}
+  {/await}
 </div>
