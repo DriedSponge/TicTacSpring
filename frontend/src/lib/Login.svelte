@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { name as n } from "$lib/session";
-  import axios from "axios";
   export const prerender = true;
-  let name: string = "";
-  let error: string = "";
+  export let auth0Client;
+  import auth from "$lib/authService";
+  function login(){
+    auth.loginWithPopup(auth0Client)
+  }
 </script>
 
 
   <div class="w-full">
-    <button type="submit">Login</button>
+    <button type="submit" on:click={login}>Login</button>
   </div>
   
 

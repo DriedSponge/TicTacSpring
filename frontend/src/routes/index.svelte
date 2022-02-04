@@ -38,10 +38,10 @@
 <br />
 <div class="container my-auto px-2 flex-grow">
   {#await createclient()}
-    <p>waiting for the promise to resolve...</p>
+    <p>Fetching authentication state</p>
   {:then val}
     {#if !$isAuthenticated}
-      <Login />
+      <Login bind:auth0Client={auth0Client} />
     {:else}
       {$user.picture}
     {/if}
