@@ -1,11 +1,15 @@
-import { Controller, Get, Req, Request} from '@nestjs/common';
-import { Session } from 'express-session';
+import { Controller, Get, Post, Req, Request} from '@nestjs/common';
 
 @Controller('players')
 export class PlayersController {
 
     @Get("/me")
     getSelf() : String {
+        return  "You!";
+    }
+
+    @Post("/login")
+    login() : String {
         return  "You!";
     }
 }

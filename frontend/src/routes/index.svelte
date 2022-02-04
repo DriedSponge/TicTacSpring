@@ -43,7 +43,7 @@
     {#if !$isAuthenticated}
       <Login bind:auth0Client={auth0Client} />
     {:else}
-      {$user.picture}
+      <h1 class="text-center text-white text-xl font-bold">Welcome back {$user.name}!</h1>
     {/if}
   {/await}
 </div>
