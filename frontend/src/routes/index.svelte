@@ -38,7 +38,7 @@
 <br />
 <div class="container my-auto px-2 flex-grow">
   {#await createclient()}
-    <p>Fetching authentication state</p>
+    <p>Fetching authentication state...</p>
   {:then val}
     {#if !$isAuthenticated}
       <Login bind:auth0Client={auth0Client} />
