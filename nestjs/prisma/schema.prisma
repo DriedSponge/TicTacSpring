@@ -11,18 +11,23 @@ datasource db {
 }
 
 model User {
-  id    Int     @default(autoincrement()) @id
-  name  String @unique
-  password String? 
-  email String?
-  google_id String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  games Game[]
+  id            Int      @id @default(autoincrement())
+  name          String   @unique
+  password      String?
+  email         String?
+  google_id     String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  verifiedEmail Boolean  @default(false)
+  game          Game?     @relation(fields: [gameId], references: [id])
+  gameId        Int?
+
+  @@index([id])
 }
 
 model Game {
-  id        Int      @default(autoincrement()) @id
-  code     Int
-  players  User[]  
+  id      Int    @id @default(autoincrement())
+  code    Int
+  players User[]
+  @@index([id])
 }
