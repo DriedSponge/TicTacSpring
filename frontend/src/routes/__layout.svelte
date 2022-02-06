@@ -7,7 +7,4 @@
         <slot />
       </section>
     </main>
-     <footer class="py-5">
-    
-    </footer>
   </div> 
