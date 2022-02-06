@@ -1,6 +1,7 @@
 import { Body, Controller, HttpException, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { Response } from 'express';
+import { CreateUserDto } from 'src/user/CreateUserDto';
 import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
@@ -11,10 +12,7 @@ export class AuthController {
 
 
     @Post("register")
-    async register(@Body() userData: { name: string; password: string; email: string }) {
-        if(userData.email == null || userData.name == null || userData.password == null){
-            throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-        }
+    async register(@Body() userData: CreateUserDto) {
         return this.userService.createUser({data:userData});
     }
 }
