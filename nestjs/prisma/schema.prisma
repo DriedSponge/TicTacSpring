@@ -29,5 +29,7 @@ model Game {
   id      Int    @id @default(autoincrement())
   code    Int
   players User[]
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
   @@index([id])
 }
