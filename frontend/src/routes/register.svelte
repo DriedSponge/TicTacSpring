@@ -2,7 +2,8 @@
   import AuthButton from "$lib/forms/authButton.svelte";
   import AuthInput from "$lib/forms/authInput.svelte";
   import { object, string, ref as rref } from "yup";
-  import axios from "axios"
+  import axios from "axios";
+  import { transformError } from "$lib/forms/ErrorTransformer";
 
   //TO-DO: Condense down to object
   let email: string;
@@ -12,12 +13,17 @@
 
   let errors = { email, password, name, confirm_password };
   function register(e) {
-    if(validate()){
-        axios.post("http://localhost:8080/auth/register",
-        {name,email,password})
-        .then(res => {
-            console.log(res);
+    if (validate()) {
+      axios
+        .post("http://localhost:8080/auth/register", { name, email, password })
+        .then((res) => {
+          console.log(res);
         })
+        .catch((err) => {
+          if (err.response.status == 400) {
+            errors = transformError(err.response.data);
+          }
+        });
     }
   }
 
