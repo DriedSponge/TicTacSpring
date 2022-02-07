@@ -9,9 +9,9 @@ export class EmailInUse implements ValidatorConstraintInterface {
     async validate(email: string) {
         try {
             await this.userService.getUserByEmail(email)
-            return true;
-        } catch (err) {
             return false;
+        } catch (err) {
+            return true;
         }
     }
     defaultMessage(args: ValidationArguments) {
@@ -25,9 +25,9 @@ export class UserNameInUse implements ValidatorConstraintInterface {
     async validate(name: string) {
         try {
             await this.userService.getUserByUsername(name)
-            return true;
-        } catch (err) {
             return false;
+        } catch (err) {
+            return true;
         }
 
     }
