@@ -11,6 +11,9 @@ onMount(()=>{
     authenticated = true
     username = res.data.name
   })
+  .catch((err) => {
+    console.log("User not logged in.")
+  })
 })
 
 export const prerender = false;
