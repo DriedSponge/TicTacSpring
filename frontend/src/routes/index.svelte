@@ -1,4 +1,6 @@
 <script>
+import Menubutton from "$lib/menubutton.svelte";
+
 
 
 
@@ -14,6 +16,10 @@
   Tic Tac Toe!
 </h1>
 <br />
-<div class="container my-auto px-2 flex-grow">
-  
+<div class="flex justify-center">
+  <div class="container my-auto px-2 max-w-4xl">
+    <Menubutton link="/login">Login</Menubutton>
+    <br>
+    <Menubutton link="/register">Register</Menubutton>
+  </div>
 </div>
