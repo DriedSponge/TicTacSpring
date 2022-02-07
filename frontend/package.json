@@ -29,6 +29,8 @@
     "@fontsource/fira-mono": "^4.5.0",
     "@lukeed/uuid": "^2.0.0",
     "axios": "^0.24.0",
-    "cookie": "^0.4.1"
+    "cookie": "^0.4.1",
+    "email-validator": "^2.0.4",
+    "yup": "^0.32.11"
   }
 }

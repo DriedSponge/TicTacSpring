@@ -4,16 +4,18 @@
   export let id: string;
   export let value = null;
   export let type: string = "text";
+  export let error: string = "";
 
-  const handleInput = e => {
-    value = type.match(/^(number|range)$/)
-      ? +e.target.value
-      : e.target.value;
+  const handleInput = (e) => {
+    value = type.match(/^(number|range)$/) ? +e.target.value : e.target.value;
   };
 </script>
 
 <label for={id}>{label}</label>
-<input name={id} {id} {placeholder} {type} {value} on:input={handleInput}/>
+<input name={id} {id} {placeholder} {type} {value} on:input={handleInput} />
+{#if error}
+  <p>{error}</p>
+{/if}
 
 <style lang="postcss">
   label {
