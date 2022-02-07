@@ -12,17 +12,21 @@
 </script>
 
 <label for={id}>{label}</label>
-<input name={id} {id} {placeholder} {type} {value} on:input={handleInput} />
+<input name={id} {id} {placeholder} {type} {value} on:input={handleInput} class:error={error} on:change />
 {#if error}
-  <p>{error}</p>
+  <p class="text-red-500">{error}</p>
 {/if}
 
 <style lang="postcss">
   label {
-    @apply font-bold text-lg;
+    @apply font-normal text-lg;
   }
   input {
-    @apply px-3  py-2 shadow-sm rounded-lg block text-lg border w-full appearance-none;
-    @apply focus:outline-none;
+    @apply px-3 py-2 shadow-sm rounded-md block text-lg border w-full appearance-none;
+    @apply focus:outline-none focus:border-blue-400 border-2;
+    @apply  transition ease-in-out duration-300;
+  }
+  input.error{
+      @apply border-red-200;
   }
 </style>

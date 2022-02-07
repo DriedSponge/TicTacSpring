@@ -12,21 +12,20 @@
   }
 
   let loginSchema = object({
-    email: string().required().email().nullable(),
+    email: string().required("Please enter your email.").email("Please enter a valid email.").nullable(),
     password: string()
-      .required()
+      .required("Please enter your password.")
       .min(5, "Your password must be longer than five characters.").nullable(),
   });
 
   async function validate() {
     try {
       await loginSchema.validate({email,password},{abortEarly:false});
+      errors = {email:"",password:""}
     } catch (err) {
-      console.log(err.errors);
       errors = err.inner.reduce((acc, err) => {
         return { ...acc, [err.path]: err.message };
       }, {});
-      console.log(errors);
     }
   }
 
@@ -44,6 +43,7 @@
           placeholder="email@example.com"
           bind:value={email}
           bind:error={errors.email}
+          on:change={validate}
         />
       </div>
       <br />
@@ -53,7 +53,9 @@
           id="password"
           placeholder="Enter your password..."
           type="password"
+          bind:error={errors.password}
           bind:value={password}
+          on:change={validate}
         />
       </div>
       <AuthButton type="submit">Login</AuthButton>
