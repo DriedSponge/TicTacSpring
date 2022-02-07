@@ -1,27 +1,48 @@
 <script lang="ts">
   import AuthButton from "$lib/forms/authButton.svelte";
   import AuthInput from "$lib/forms/authInput.svelte";
-  import { object, string, number, date, InferType, ValidationError } from "yup";
+  import axios from "axios";
+  import { goto } from '$app/navigation';
+  import {
+    object,
+    string,
+    number,
+    date,
+    InferType,
+    ValidationError,
+  } from "yup";
   let email: string;
   let password: string;
-  let errors = {email,password};
-  function login(e) {
-    console.log(email);
-    console.log(password);
-    validate();
+  let errors = { email, password };
+  async function login(e) {
+    if (await validate()) {
+      axios
+        .post("http://localhost:8080/auth/login", {
+          email,
+          password,
+        },{withCredentials:true})
+        .then((res) => {
+          goto('/')
+        })
+        .catch((err) => {});
+    }
   }
 
   let loginSchema = object({
-    email: string().required("Please enter your email.").email("Please enter a valid email.").nullable(),
+    email: string()
+      .required("Please enter your email.")
+      .email("Please enter a valid email.")
+      .nullable(),
     password: string()
       .required("Please enter your password.")
-      .min(5, "Your password must be longer than five characters.").nullable(),
+      .min(5, "Your password must be longer than five characters.")
+      .nullable(),
   });
 
   async function validate() {
     try {
-      await loginSchema.validate({email,password},{abortEarly:false});
-      errors = {email:"",password:""}
+      await loginSchema.validate({ email, password }, { abortEarly: false });
+      errors = { email: "", password: "" };
       return true;
     } catch (err) {
       errors = err.inner.reduce((acc, err) => {
@@ -33,8 +54,11 @@
 
   export const prerender = true;
 </script>
+
 <div class="flex items-center justify-center h-screen">
-  <div class="bg-white md:px-10 px-5 py-5 rounded-xl flex-1 mx-4 max-w-2xl shadow-2xl">
+  <div
+    class="bg-white md:px-10 px-5 py-5 rounded-xl flex-1 mx-4 max-w-2xl shadow-2xl"
+  >
     <h1 class="mb-4 text-center font-bold text-2xl md:text-3xl">Login</h1>
     <hr />
     <form class="my-3" on:submit|preventDefault={login}>

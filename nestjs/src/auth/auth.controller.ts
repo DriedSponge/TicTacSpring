@@ -24,8 +24,14 @@ export class AuthController {
 
     @UseGuards(AuthGuard('local'))
     @Post('login')
-    async login(@Req() req) {
-      return this.authService.login(req.user);;
+    async login(@Req() req, @Res() response: Response) {
+      let token = await this.authService.login(req.user);
+      response.cookie('access_token',token,{
+        httpOnly: true,
+        domain:"localhost",
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      })
+      .send({ success: true });
     }
 
     @UseGuards(JwtAuthGuard)

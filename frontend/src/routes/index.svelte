@@ -1,7 +1,13 @@
 <script>
 import Menubutton from "$lib/menubutton.svelte";
+import axios from "axios";
+import { onMount } from "svelte";
 
-
+onMount(()=>{
+  axios.get("http://localhost:8080/auth/profile",{withCredentials: true}).then(res=>{
+    console.log(res)
+  })
+})
 
 
 </script>

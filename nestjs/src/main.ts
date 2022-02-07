@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
+import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({
@@ -16,7 +17,8 @@ async function bootstrap() {
       return new BadRequestException(validationErrors);
     }
   }));
-  app.enableCors({origin:["http://localhost:3000"]});
+  app.use(cookieParser());
+  app.enableCors({origin:["http://localhost:3000"],credentials:true});
   await app.listen(8080);
 }
 bootstrap();
