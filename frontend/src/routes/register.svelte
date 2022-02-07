@@ -12,12 +12,14 @@
   let name: string;
 
   let errors = { email, password, name, confirm_password };
+  let success: boolean = true;
+
   async function register(e) {
     if (await validate()) {
       axios
         .post("http://localhost:8080/auth/register", { name, email, password })
         .then((res) => {
-          console.log(res);
+          success = true;
         })
         .catch((err) => {
           if (err.response.status == 400) {
@@ -68,67 +70,77 @@
 </script>
 
 <div class="flex items-center justify-center h-screen">
-  <div class="bg-white md:px-10 px-5 py-5 rounded-xl flex-1 mx-4 max-w-2xl shadow-2xl">
-    <h1 class="mb-4 text-center font-bold text-2xl md:text-3xl">
-      Create An Account
-    </h1>
-    <hr />
-    <form class="my-3" on:submit|preventDefault={register}>
-      <div class="mt-2">
-        <AuthInput
-          label="Username"
-          id="name"
-          placeholder="DriedSponge"
-          helpertext="Enter a username between 3-30 characters."
-          bind:value={name}
-          bind:error={errors.name}
-          on:change={validate}
-        />
-      </div>
+  <div
+    class="bg-white md:px-10 px-5 py-5 rounded-xl flex-1 mx-4 max-w-2xl shadow-2xl"
+  >
+    {#if !success}
+      <h1 class="mb-4 text-center font-bold text-2xl md:text-3xl">
+        Create An Account
+      </h1>
+      <hr />
+      <form class="my-3" on:submit|preventDefault={register}>
+        <div class="mt-2">
+          <AuthInput
+            label="Username"
+            id="name"
+            placeholder="DriedSponge"
+            helpertext="Enter a username between 3-30 characters."
+            bind:value={name}
+            bind:error={errors.name}
+            on:change={validate}
+          />
+        </div>
+        <br />
+        <div class="mt-2">
+          <AuthInput
+            label="Email"
+            id="email"
+            placeholder="email@example.com"
+            helpertext="Enter an email you would like asscoiated with your account."
+            bind:value={email}
+            bind:error={errors.email}
+            on:change={validate}
+          />
+        </div>
+        <br />
+        <div class="mb-2">
+          <AuthInput
+            label="Password"
+            id="password"
+            placeholder="Enter a password..."
+            helpertext="Enter a strong password to secure your account."
+            type="password"
+            bind:error={errors.password}
+            bind:value={password}
+            on:change={validate}
+          />
+        </div>
+        <br />
+        <div class="mb-2">
+          <AuthInput
+            label="Confirm Password"
+            id="confirm_password"
+            placeholder="Enter your password..."
+            helpertext="Re-enter the password you entered above."
+            type="password"
+            bind:error={errors.confirm_password}
+            bind:value={confirm_password}
+            on:change={validate}
+          />
+        </div>
+        <AuthButton type="submit">Register</AuthButton>
+      </form>
       <br />
-      <div class="mt-2">
-        <AuthInput
-          label="Email"
-          id="email"
-          placeholder="email@example.com"
-          helpertext="Enter an email you would like asscoiated with your account."
-          bind:value={email}
-          bind:error={errors.email}
-          on:change={validate}
-        />
-      </div>
-      <br />
-      <div class="mb-2">
-        <AuthInput
-          label="Password"
-          id="password"
-          placeholder="Enter a password..."
-          helpertext="Enter a strong password to secure your account."
-          type="password"
-          bind:error={errors.password}
-          bind:value={password}
-          on:change={validate}
-        />
-      </div>
-      <br />
-      <div class="mb-2">
-        <AuthInput
-          label="Confirm Password"
-          id="confirm_password"
-          placeholder="Enter your password..."
-          helpertext="Re-enter the password you entered above."
-          type="password"
-          bind:error={errors.confirm_password}
-          bind:value={confirm_password}
-          on:change={validate}
-        />
-      </div>
-      <AuthButton type="submit">Register</AuthButton>
-    </form>
-    <br />
-    <p class="text-sm text-center">
-      Already have an account? <a href="/login">Login here!</a>
-    </p>
+      <p class="text-sm text-center">
+        Already have an account? <a href="/login">Login here!</a>
+      </p>
+    {:else}
+      <p class="text-xl text-center">
+        <strong>Congratulations! Your account has been created!</strong>
+        <br>
+        To continue, please <a href="/login">login</a>
+      </p>
+    {/if}
   </div>
 </div>
 
