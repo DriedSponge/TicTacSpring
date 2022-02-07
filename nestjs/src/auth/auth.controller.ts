@@ -15,7 +15,7 @@ export class AuthController {
     @Post("register")
     async register(@Body() userData: CreateUserDto) {
         const salt = await bcrypt.genSalt();
-        userData.password = await bcrypt.hash(userData.password, salt);
+        userData.password = await bcrypt.hash(userData.password,10);
         return this.userService.createUser({data:userData});
     }
 }
