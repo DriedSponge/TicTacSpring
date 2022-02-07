@@ -22,10 +22,12 @@
     try {
       await loginSchema.validate({email,password},{abortEarly:false});
       errors = {email:"",password:""}
+      return true;
     } catch (err) {
       errors = err.inner.reduce((acc, err) => {
         return { ...acc, [err.path]: err.message };
       }, {});
+      return false;
     }
   }
 

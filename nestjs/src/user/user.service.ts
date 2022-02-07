@@ -9,4 +9,22 @@ export class UserService {
     async createUser(user: Prisma.UserCreateArgs): Promise<User>{
        return this.prisma.user.create(user);
     }
+
+    async getUserByUsername(name:string): Promise<User>{
+        return this.prisma.user.findFirst({
+            rejectOnNotFound: true,
+            where:{
+                name:name
+            }
+        })
+    }
+
+    async getUserByEmail(email:string): Promise<User>{
+        return this.prisma.user.findFirst({
+            rejectOnNotFound: true,
+            where:{
+                email:email
+            }
+        })
+    }
 }

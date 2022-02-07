@@ -16,6 +16,7 @@ async function bootstrap() {
       return new BadRequestException(validationErrors);
     }
   }));
+  app.enableCors({origin:["http://localhost:3000"]});
   await app.listen(8080);
 }
 bootstrap();
