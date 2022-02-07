@@ -12,8 +12,8 @@
   let name: string;
 
   let errors = { email, password, name, confirm_password };
-  function register(e) {
-    if (validate()) {
+  async function register(e) {
+    if (await validate()) {
       axios
         .post("http://localhost:8080/auth/register", { name, email, password })
         .then((res) => {
