@@ -7,10 +7,9 @@ import { UserService } from "src/user/user.service";
 export class EmailInUse implements ValidatorConstraintInterface {
     constructor(private userService: UserService) { }
     async validate(email: string) {
-        try {
-            await this.userService.getUserByEmail(email)
+        if(await this.userService.getUserByEmail(email)){
             return false;
-        } catch (err) {
+        }else{
             return true;
         }
     }
@@ -23,10 +22,9 @@ export class EmailInUse implements ValidatorConstraintInterface {
 export class UserNameInUse implements ValidatorConstraintInterface {
     constructor(private userService: UserService) { }
     async validate(name: string) {
-        try {
-            await this.userService.getUserByUsername(name)
+        if(await this.userService.getUserByUsername(name)){
             return false;
-        } catch (err) {
+        }else{
             return true;
         }
 

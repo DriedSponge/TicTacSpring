@@ -10,21 +10,27 @@ export class UserService {
        return this.prisma.user.create(user);
     }
 
-    async getUserByUsername(name:string): Promise<User>{
-        return this.prisma.user.findFirst({
-            rejectOnNotFound: true,
-            where:{
-                name:name
-            }
-        })
+    async getUserByUsername(name:string): Promise<any>{
+        try {
+            let user = await this.prisma.user.findFirst({
+                rejectOnNotFound: true,
+                where:{name:name}
+            })
+            return user
+        }catch{
+            return null
+        }
     }
 
-    async getUserByEmail(email:string): Promise<User>{
-        return this.prisma.user.findFirst({
-            rejectOnNotFound: true,
-            where:{
-                email:email
-            }
-        })
+    async getUserByEmail(email:string): Promise<any>{
+        try {
+            let user = await this.prisma.user.findFirst({
+                rejectOnNotFound: true,
+                where:{email:email},
+            })
+            return user
+        }catch{
+            return null
+        }
     }
 }
