@@ -12,7 +12,7 @@
   let name: string;
 
   let errors = { email, password, name, confirm_password };
-  let success: boolean = true;
+  let success: boolean = false;
 
   async function register(e) {
     if (await validate()) {
