@@ -1,22 +1,9 @@
 <script lang="ts">
-import Menubutton from "$lib/menubutton.svelte";
-import axios from "axios";
-import { onMount } from "svelte";
-
-let authenticated:boolean = false
-let username:string = "";
-onMount(()=>{
-  axios.get("http://localhost:8080/auth/profile",{withCredentials: true}).then(res=>{
-    console.log(res)
-    authenticated = true
-    username = res.data.name
-  })
-  .catch((err) => {
-    console.log("User not logged in.")
-  })
-})
-
-export const prerender = false;
+  import Menubutton from "$lib/menubutton.svelte";
+  import axios from "axios";
+  import { onMount } from "svelte";
+  import { isAuthenticated, user } from "$lib/store";
+  import { createClient } from "$lib/authService";
 </script>
 
 <svelte:head>
@@ -31,20 +18,26 @@ export const prerender = false;
 <br />
 <div class="flex justify-center">
   <div class="container my-auto px-2 max-w-4xl">
-      {#if !authenticated}
-      <Menubutton link="/login">Login</Menubutton>
-      <br>
-      <Menubutton link="/register">Register</Menubutton>
+    {#await createClient()}
+      <h1 class="text-2xl text-center animate-pulse text-white font-bold">Loading...</h1>
+    {:then val}
+      {#if !$isAuthenticated}
+        <Menubutton link="/login">Login</Menubutton>
+        <br />
+        <Menubutton link="/register">Register</Menubutton>
       {:else}
-      <h1 class="text-center text-white text-xl font-bold">Welcome back {username}!</h1>
-      <br>
-      <Menubutton link="/login">Create Game</Menubutton>
-      <br>
-      <Menubutton link="/login">Join Game</Menubutton>
-      <br>
-      <Menubutton link="/login">Your Statistics</Menubutton>
-      <br>
-      <Menubutton link="/register">Logout</Menubutton>
+        <h1 class="text-center text-white text-xl font-bold">
+          Welcome back {$user.name}!
+        </h1>
+        <br />
+        <Menubutton link="/login">Create Game</Menubutton>
+        <br />
+        <Menubutton link="/login">Join Game</Menubutton>
+        <br />
+        <Menubutton link="/login">Your Statistics</Menubutton>
+        <br />
+        <Menubutton link="/register">Logout</Menubutton>
       {/if}
+    {/await}
   </div>
 </div>
