@@ -9,7 +9,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     validationError:{target:false, value: false},
     forbidUnknownValues: true,
-    skipUndefinedProperties:true,
+    skipUndefinedProperties:false,
     forbidNonWhitelisted: true,
     disableErrorMessages: false,
     whitelist: true,
