@@ -12,13 +12,15 @@ datasource db {
 
 model User {
   id            Int      @id @default(autoincrement())
-  name          String   @unique
+  uid           String   @unique
+  name          String   
   password      String?
   email         String?  @unique
   google_id     String?
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
   verifiedEmail Boolean  @default(false)
+  guest_account Boolean  @default(false)
   game          Game?    @relation(fields: [gameId], references: [id])
   gameId        Int?
 
@@ -31,6 +33,5 @@ model Game {
   players    User[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
   @@index([id])
 }

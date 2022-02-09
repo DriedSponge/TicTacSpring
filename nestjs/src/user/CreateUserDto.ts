@@ -18,4 +18,6 @@ export class CreateUserDto {
   @MaxLength(30)
   @Validate(UserNameInUse)
   name: string;
+
+  uid:string;
 }
