@@ -16,7 +16,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(30)
-  @Validate(UserNameInUse)
   name: string;
 
   uid:string;
