@@ -4,6 +4,7 @@ import * as session from 'express-session';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { useContainer, ValidationError } from 'class-validator';
 import * as cookieParser from 'cookie-parser';
+import * as csurf from 'csurf';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({
@@ -17,8 +18,14 @@ async function bootstrap() {
       return new BadRequestException(validationErrors);
     }
   }));
-  useContainer(app.select(AppModule),{fallbackOnErrors:true})
   app.use(cookieParser());
+  app.use(session({
+    secret: 'my-secret',
+    resave: false,
+    saveUninitialized: false,
+  }))
+  app.use(csurf());
+  useContainer(app.select(AppModule),{fallbackOnErrors:true})
   app.enableCors({origin:["http://localhost:3000"],credentials:true});
   await app.listen(8080);
 }
