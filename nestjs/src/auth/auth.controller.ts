@@ -38,17 +38,12 @@ export class AuthController {
     }
 
     @Post('login-guest')
-    async guestLogin(@Body() userData:CreateGuestUserDto, @Res() response: Response) {
+    async guestLogin(@Body() userData:CreateGuestUserDto, @Res() response: Response,@Request() req) {
       userData.uid = randomUUID();
-      userData.guest_account = true;
-      let user = await this.userService.createUser({data:userData})
-      let token = await this.authService.login(user);
-      response.cookie('access_token',token,{
-        httpOnly: true,
-        domain:"localhost",
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
-      })
-      .send({ success: true });
+      if(!req.session.name){
+        req.session.name = userData.name;
+      }
+      response.send({success:true,session:req.session})
     }
 
 

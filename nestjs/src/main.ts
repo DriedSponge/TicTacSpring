@@ -5,8 +5,10 @@ import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { useContainer, ValidationError } from 'class-validator';
 import * as cookieParser from 'cookie-parser';
 import * as csurf from 'csurf';
+import helmet from 'helmet';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(helmet());
   app.useGlobalPipes(new ValidationPipe({
     validationError:{target:false, value: false},
     forbidUnknownValues: true,
@@ -24,7 +26,7 @@ async function bootstrap() {
     resave: false,
     saveUninitialized: false,
   }))
-  app.use(csurf());
+  //app.use(csurf());
   useContainer(app.select(AppModule),{fallbackOnErrors:true})
   app.enableCors({origin:["http://localhost:3000"],credentials:true});
   await app.listen(8080);
