@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Post, Req, Res, UseGuards, Request } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Session, HttpException, HttpStatus, Post, Req, Res, UseGuards, Request } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { Response } from 'express';
 import { CreateUserDto } from 'src/user/CreateUserDto';
@@ -40,16 +40,28 @@ export class AuthController {
     @Post('login-guest')
     async guestLogin(@Body() userData:CreateGuestUserDto, @Res() response: Response,@Request() req) {
       userData.uid = randomUUID();
-      if(!req.session.name){
+      userData.guest_account = true;
+      if(!req.session.name || !req.session.uid){
         req.session.name = userData.name;
+        req.session.uid = userData.uid;
+        response.status(201).json({success:true,name:req.session.name,uid:req.session.uid})
+      }else{
+        response.status(200).json({success:true,name:req.session.name,uid:req.session.uid})
       }
-      response.send({success:true,session:req.session})
     }
 
+    @Get("me")
+    getSession(@Request() req, @Res() response) {
+      if(req.session.name && req.session.uid){
+        response.status(200).json({success: true, session:req.session, sessionId:req.sessionID, storage: sessionStorage.getItem(req.sessionId)});
+      }else{
+        return response.status(401).json({success: false, session:req.session,sessionId:req.sessionID });
+      }
+    }
 
-    @UseGuards(JwtAuthGuard)
-    @Get('profile')
-    getProfile(@Request() req) {
-      return req.user;
+    @Post('logout')
+    logout(@Request() req){
+      req.session.destroy()
+      return true;
     }
 }

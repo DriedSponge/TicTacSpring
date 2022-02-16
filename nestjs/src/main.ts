@@ -25,6 +25,7 @@ async function bootstrap() {
     secret: 'my-secret',
     resave: false,
     saveUninitialized: false,
+    cookie:{maxAge:86400000}
   }))
   //app.use(csurf());
   useContainer(app.select(AppModule),{fallbackOnErrors:true})
