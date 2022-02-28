@@ -4,6 +4,8 @@
   import { onMount } from "svelte";
   import { isAuthenticated, user } from "$lib/store";
   import { createClient } from "$lib/authService";
+  import AuthInput from "$lib/forms/authInput.svelte";
+  import About from "./about.svelte";
 </script>
 
 <svelte:head>
@@ -19,12 +21,18 @@
 <div class="flex justify-center">
   <div class="container my-auto px-2 max-w-4xl">
     {#await createClient()}
-      <h1 class="text-2xl text-center animate-pulse text-white font-bold">Loading...</h1>
+      <h1 class="text-2xl text-center animate-pulse text-white font-bold">
+        Loading...
+      </h1>
     {:then val}
       {#if !$isAuthenticated}
-        <Menubutton link="/login">Login</Menubutton>
-        <br />
-        <Menubutton link="/register">Register</Menubutton>
+        <form>
+          <AuthInput
+            label="Name"
+            placeholder="Enter a valid name..."
+            id="name"
+          />
+        </form>
       {:else}
         <h1 class="text-center text-white text-xl font-bold">
           Welcome back {$user.name}!
