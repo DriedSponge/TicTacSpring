@@ -53,9 +53,9 @@ export class AuthController {
     @Get("me")
     getSession(@Request() req, @Res() response) {
       if(req.session.name && req.session.uid){
-        response.status(200).json({success: true, session:req.session, sessionId:req.sessionID, storage: sessionStorage.getItem(req.sessionId)});
+        response.status(200).json({success: true, session:req.session, sessionId:req.sessionID});
       }else{
-        return response.status(401).json({success: false, session:req.session,sessionId:req.sessionID });
+        return response.status(401).json({success: false});
       }
     }
 
