@@ -6,6 +6,7 @@
   import { createClient } from "$lib/authService";
   import AuthInput from "$lib/forms/authInput.svelte";
   import About from "./about.svelte";
+  import Login from "$lib/Login.svelte";
 </script>
 
 <svelte:head>
@@ -26,13 +27,7 @@
       </h1>
     {:then val}
       {#if !$isAuthenticated}
-        <form>
-          <AuthInput
-            label="Name"
-            placeholder="Enter a valid name..."
-            id="name"
-          />
-        </form>
+        <Login />
       {:else}
         <h1 class="text-center text-white text-xl font-bold">
           Welcome back {$user.name}!
