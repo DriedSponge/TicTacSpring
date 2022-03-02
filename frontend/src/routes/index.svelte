@@ -30,16 +30,12 @@
         <Login />
       {:else}
         <h1 class="text-center text-white text-xl font-bold">
-          Welcome back {$user.name}!
+          Welcome {$user.name}!
         </h1>
         <br />
         <Menubutton link="/login">Create Game</Menubutton>
         <br />
         <Menubutton link="/login">Join Game</Menubutton>
-        <br />
-        <Menubutton link="/login">Your Statistics</Menubutton>
-        <br />
-        <Menubutton link="/register">Logout</Menubutton>
       {/if}
     {/await}
   </div>
