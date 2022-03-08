@@ -45,9 +45,9 @@ export class AuthController {
     if (!req.session.name || !req.session.uid) {
       req.session.name = userData.name;
       req.session.uid = userData.uid;
-      response.status(201).json({ success: true, name: req.session.name, uid: req.session.uid })
+      response.status(201).json({ success: true, user: { name: req.session.name, uid: req.session.uid } })
     } else {
-      response.status(200).json({ success: true, name: req.session.name, uid: req.session.uid })
+      response.status(200).json({ success: true, user: { name: req.session.name, uid: req.session.uid } })
     }
   }
 

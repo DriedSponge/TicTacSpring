@@ -1,12 +1,8 @@
 <script lang="ts">
-  import AuthButton from "$lib/forms/authButton.svelte";
-  import AuthInput from "$lib/forms/authInput.svelte";
   import axios from "axios";
   import { goto } from "$app/navigation";
-  import {
-    object,
-    string,
-  } from "yup";
+  import { isAuthenticated, user } from "$lib/store";
+  import { object, string } from "yup";
   let name: string;
   let errors = { name };
   async function login(e) {
@@ -15,11 +11,13 @@
         .post(
           "http://localhost:8080/auth/login-guest",
           {
-            name:name,
+            name: name,
           },
           { withCredentials: true }
         )
         .then((res) => {
+          isAuthenticated.set(true);
+          user.set(res.data.user);
           goto("/");
         })
         .catch((err) => {});
@@ -30,14 +28,14 @@
     name: string()
       .required("Please enter a name.")
       .min(3, "Your name must be longer than 3 characters.")
-      .max(30,"Your name must be shorther than 30 characters")
+      .max(30, "Your name must be shorther than 30 characters")
       .nullable(),
   });
 
   async function validate() {
     try {
       await loginSchema.validate({ name }, { abortEarly: false });
-      errors = { name: ""};
+      errors = { name: "" };
       return true;
     } catch (err) {
       errors = err.inner.reduce((acc, err) => {
@@ -50,10 +48,17 @@
   export const prerender = true;
 </script>
 
-<form autocomplete="off" on:submit|preventDefault="{login}">
+<form autocomplete="off" on:submit|preventDefault={login}>
   <div class="flex flex-col">
     <div class="w-full">
-      <input bind:value="{name}" on:change="{validate}"  name="name" id="name" maxlength="30" placeholder="Your Name" />
+      <input
+        bind:value={name}
+        on:change={validate}
+        name="name"
+        id="name"
+        maxlength="30"
+        placeholder="Your Name"
+      />
     </div>
     <div class="w-full">
       <button type="submit">Go {errors.name}</button>
