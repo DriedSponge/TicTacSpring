@@ -1,14 +1,12 @@
 <script lang="ts">
   import Menubutton from "$lib/menubutton.svelte";
-  import axios from "axios";
-  import { onMount } from "svelte";
   import { isAuthenticated, user } from "$lib/store";
   import { createClient } from "$lib/authService";
-  import AuthInput from "$lib/forms/authInput.svelte";
-  import About from "./about.svelte";
   import Login from "$lib/Login.svelte";
+  import { SvelteToast } from "@zerodevx/svelte-toast";
 </script>
 
+<SvelteToast />
 <svelte:head>
   <title>Tic Tac Toe!</title>
 </svelte:head>

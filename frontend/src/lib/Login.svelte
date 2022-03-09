@@ -3,6 +3,7 @@
   import { goto } from "$app/navigation";
   import { isAuthenticated, user } from "$lib/store";
   import { object, string } from "yup";
+  import { toast } from "@zerodevx/svelte-toast";
   let name: string;
   let errors = { name };
   async function login(e) {
@@ -41,6 +42,15 @@
       errors = err.inner.reduce((acc, err) => {
         return { ...acc, [err.path]: err.message };
       }, {});
+      toast.push({
+        msg: errors.name,
+        duration: 4000,
+        pausable: true,
+        theme: {
+          "--toastBackground": "#F56565",
+          "--toastBarBackground": "#C53030",
+        },
+      });
       return false;
     }
   }
@@ -61,7 +71,7 @@
       />
     </div>
     <div class="w-full">
-      <button type="submit">Go {errors.name}</button>
+      <button type="submit">Go</button>
     </div>
   </div>
 </form>
