@@ -4,10 +4,13 @@
   import { isAuthenticated, user } from "$lib/store";
   import { object, string } from "yup";
   import { toast } from "@zerodevx/svelte-toast";
+  import Loading from "./Loading.svelte";
   let name: string;
+  let loading: boolean = false;
   let errors = { name };
   async function login(e) {
     if (await validate()) {
+      loading = true;
       axios
         .post(
           "http://localhost:8080/auth/login-guest",
@@ -21,7 +24,9 @@
           user.set(res.data.user);
           goto("/");
         })
-        .catch((err) => {});
+        .catch((err) => {
+          loading = false;
+        });
     }
   }
 
@@ -58,23 +63,27 @@
   export const prerender = true;
 </script>
 
-<form autocomplete="off" on:submit|preventDefault={login}>
-  <div class="flex flex-col">
-    <div class="w-full">
-      <input
-        bind:value={name}
-        on:change={validate}
-        name="name"
-        id="name"
-        maxlength="30"
-        placeholder="Your Name"
-      />
+{#if loading}
+  <Loading>Loading..</Loading>
+{:else}
+  <form autocomplete="off" on:submit|preventDefault={login}>
+    <div class="flex flex-col">
+      <div class="w-full">
+        <input
+          bind:value={name}
+          on:change={validate}
+          name="name"
+          id="name"
+          maxlength="30"
+          placeholder="Your Name"
+        />
+      </div>
+      <div class="w-full">
+        <button type="submit">Go</button>
+      </div>
     </div>
-    <div class="w-full">
-      <button type="submit">Go</button>
-    </div>
-  </div>
-</form>
+  </form>
+{/if}
 
 <style lang="postcss">
   button {
