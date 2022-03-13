@@ -18,26 +18,6 @@ export class AuthController {
     private authService: AuthService) { }
 
 
-  @Post("register")
-  async register(@Body() userData: CreateUserDto) {
-    const salt = await bcrypt.genSalt();
-    userData.uid = randomUUID();
-    userData.password = await bcrypt.hash(userData.password, 10);
-    return this.userService.createUser({ data: userData });
-  }
-
-  @UseGuards(AuthGuard('local'))
-  @Post('login')
-  async login(@Req() req, @Res() response: Response) {
-    let token = await this.authService.login(req.user);
-    response.cookie('access_token', token, {
-      httpOnly: true,
-      domain: "localhost",
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
-    })
-      .send({ success: true });
-  }
-
   @Post('login-guest')
   async guestLogin(@Body() userData: CreateGuestUserDto, @Res() response: Response, @Request() req) {
     userData.uid = randomUUID();
