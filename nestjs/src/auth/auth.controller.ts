@@ -39,8 +39,8 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(SessionGuard)
-  logout(@Request() req) {
+  logout(@Request() req, @Res() response) {
     req.session.destroy()
-    return true;
+    response.status(200).json({sucess:true})
   }
 }

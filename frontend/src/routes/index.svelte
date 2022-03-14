@@ -1,7 +1,7 @@
 <script lang="ts">
   import Menubutton from "$lib/menubutton.svelte";
   import { isAuthenticated, user } from "$lib/store";
-  import { createClient } from "$lib/authService";
+  import { createClient, logout } from "$lib/authService";
   import Login from "$lib/Login.svelte";
   import { SvelteToast } from "@zerodevx/svelte-toast";
 import Loading from "$lib/Loading.svelte";
@@ -33,6 +33,8 @@ import Loading from "$lib/Loading.svelte";
         <Menubutton link="/login">Create Game</Menubutton>
         <br />
         <Menubutton link="/login">Join Game</Menubutton>
+        <br />
+        <Menubutton on:click="{logout}">Change Name</Menubutton>
       {/if}
     {/await}
   </div>
