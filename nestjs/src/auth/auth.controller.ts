@@ -27,20 +27,20 @@ export class AuthController {
       req.session.uid = userData.uid;
       response.status(201).json({ success: true, user: { name: req.session.name, uid: req.session.uid } })
     } else {
-      response.status(200).json({ success: true, user: { name: req.session.name, uid: req.session.uid } })
+      response.status(200).json({ success: true, user: { name: req.session.name, uid: req.session.uid, gameId: req.session.gameId } })
     }
   }
 
   @Get("me")
   @UseGuards(SessionGuard)
   getSession(@Request() req, @Res() response) {
-    response.status(200).json({ success: true, user: { name: req.session.name, uid: req.session.uid } });
+    response.status(200).json({ success: true, user: { name: req.session.name, uid: req.session.uid, gameId: req.session.gameId } });
   }
 
   @Post('logout')
   @UseGuards(SessionGuard)
   logout(@Request() req, @Res() response) {
     req.session.destroy()
-    response.status(200).json({sucess:true})
+    response.status(200).json({ sucess: true })
   }
 }

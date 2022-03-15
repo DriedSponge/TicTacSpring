@@ -9,8 +9,12 @@ export class GameController {
 @Post("create")
   @UseGuards(SessionGuard)
   async getSession(@Request() req, @Res() response) {
-    const game: Game  = await this.gameService.createGame();
+      if(req.session.gameId){
+        await this.gameService.deleteGameByCode(req.session.gameId)
+      }
+      const game: Game  = await this.gameService.createGame();
+      req.session.gameId = game.code;
+      response.status(200).json({ success: true, gameId:game.code });
     
-    response.status(200).json({ success: true, gameId:game.code });
   }
 }

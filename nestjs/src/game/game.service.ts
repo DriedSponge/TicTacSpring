@@ -33,4 +33,13 @@ export class GameService {
         })
     }
 
+    async deleteGameByCode(code:number){
+        console.debug("Deleting game: "+code)
+        try{
+            await this.prisma.game.delete({where:{code:code}})
+        }catch{
+            console.debug("Game to delete is already gone :).")
+        }
+    }
+
 }
