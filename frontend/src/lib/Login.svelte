@@ -71,7 +71,6 @@
       <div class="w-full">
         <input
           bind:value={name}
-          on:change={validate}
           name="name"
           id="name"
           maxlength="30"
