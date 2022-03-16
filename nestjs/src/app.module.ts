@@ -9,10 +9,11 @@ import { ValidatorsModule } from './validators/validators.module';
 import { GameController } from './game/game.controller';
 import { GameService } from './game/game.service';
 import { GameModule } from './game/game.module';
+import { GameGateway } from './game/game.gateway';
 
 @Module({
   imports: [AuthModule, UserModule, ValidatorsModule, GameModule],
   controllers: [AppController, GameController],
-  providers: [AppService, PrismaService, UserService, GameService]
+  providers: [AppService, PrismaService, UserService, GameService, GameGateway]
 })
 export class AppModule {}
