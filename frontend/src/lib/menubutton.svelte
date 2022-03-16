@@ -1,5 +1,5 @@
 <script lang="ts">
-export let link: string;
+export let link: string = null;
 </script>
 <a href="{link}" on:click|preventDefault><slot/></a>
 <style lang="postcss">
