@@ -1,6 +1,8 @@
 <script lang="ts">
   import { getStores, navigating, page, session, updated } from "$app/stores";
   import Board from "$lib/Board.svelte";
+  import { goto } from "$app/navigation";
+
   let revealCode: boolean = false;
 </script>
 
@@ -10,20 +12,25 @@
       <h1 class="text-white font-bold text-4xl my-5 animate-pulse">
         Waiting for opponent...
       </h1>
-      <button class="revealCode" on:click="{(()=>revealCode=!revealCode)}">
-        {#if revealCode}
-        {$page.params.gameId}
-        {:else}
-        Click to reveal code!
-        {/if}
-    </button>
+      <div class="my-5 w-full">
+        <button class="btn" on:click="{(()=>revealCode=!revealCode)}">
+            {#if revealCode}
+            {$page.params.gameId}
+            {:else}
+            Click to reveal code!
+            {/if}
+        </button>
+        <button on:click="{(()=>goto("/"))}" class="btn">Exit</button>
+      </div>
+      
+
     </div>
     <Board />
   </div>
 </div>
 <style lang="postcss">
-.revealCode{
-    @apply bg-white max-w-fit my-5 p-2 rounded-xl font-bold select-none shadow-2xl ;
+.btn{
+    @apply bg-white max-w-fit p-2 rounded-lg font-bold select-none shadow-2xl inline ;
     @apply hover:text-blue-500;
     @apply transition-colors ease-in-out duration-300;
 }

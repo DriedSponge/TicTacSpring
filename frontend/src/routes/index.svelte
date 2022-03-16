@@ -12,6 +12,7 @@
     axios
       .post("http://localhost:8080/game/create", {}, { withCredentials: true })
       .then((res) => {
+        // @ts-ignore
         user.gameId = res.data.gameId;
         goto("/game/" + res.data.gameId);
       });
@@ -28,7 +29,9 @@
 <div class="flex justify-center">
   <div class="container my-auto px-2 max-w-4xl">
     {#await createClient()}
-      <Loading />
+      <Loading >
+        Loading...
+      </Loading>
     {:then val}
       {#if !$isAuthenticated}
         <Login />
