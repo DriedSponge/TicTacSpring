@@ -10,9 +10,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
   app.useGlobalPipes(new ValidationPipe({
-    validationError:{target:false, value: false},
+    validationError: { target: false, value: false },
     forbidUnknownValues: true,
-    skipUndefinedProperties:false,
+    skipUndefinedProperties: false,
     forbidNonWhitelisted: true,
     disableErrorMessages: false,
     whitelist: true,
@@ -21,15 +21,17 @@ async function bootstrap() {
     }
   }));
   app.use(cookieParser());
-  app.use(session({
+
+  const sessionMiddleware = session({
     secret: 'my-secret',
     resave: false,
     saveUninitialized: false,
-    cookie:{maxAge:86400000}
-  }))
+    cookie: { maxAge: 86400000 }
+  });
+  app.use(sessionMiddleware)
   //app.use(csurf());
-  useContainer(app.select(AppModule),{fallbackOnErrors:true})
-  app.enableCors({origin:["http://localhost:3000"],credentials:true});
+  useContainer(app.select(AppModule), { fallbackOnErrors: true })
+  app.enableCors({ origin: ["http://localhost:3000"], credentials: true });
   await app.listen(8080);
 }
 bootstrap();
