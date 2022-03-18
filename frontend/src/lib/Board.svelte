@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';◘
+  import { createEventDispatcher } from 'svelte';
  export let data: any = ["-", "-", "-", "-", "-", "-", "-", "-", "-"];
  export let currentPlayer: string;
  let gameOver: boolean = false;
