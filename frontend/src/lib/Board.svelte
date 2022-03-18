@@ -1,10 +1,17 @@
 <script lang="ts">
-  let data: any = ["-", "-", "-", "-", "-", "-", "-", "-", "-"];
+ export let data: any = ["-", "-", "-", "-", "-", "-", "-", "-", "-"];
+ export let currentPlayer: string;
+ import { createEventDispatcher } from 'svelte';
+ const dispatch = createEventDispatcher();
+  const handleClick = (e, tile) =>{
+    data[tile]= currentPlayer;
+    dispatch("turn",{btnEvent:e,data:data})
+  }
 </script>
 
 <div class="grid grid-cols-3 justify-items-center  bg-white">
-  {#each data as tile}
-    <button class="tttbtn" on:click="{(()=>{tile="X"; console.log(data)})}">
+  {#each data as tile, index}
+    <button disabled="{tile!="-"}" class="tttbtn" on:click="{((e)=>{handleClick(e,index)})}">
       {tile}
     </button>
   {/each}

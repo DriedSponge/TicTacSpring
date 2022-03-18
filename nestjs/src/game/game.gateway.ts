@@ -7,7 +7,6 @@ export class GameGateway {
   @SubscribeMessage('joinGame')
   @UseGuards(SessionGuard)
   handleMessage(client: any, payload: any): string {
-    
     return 'Hello world!';
   }
 }
