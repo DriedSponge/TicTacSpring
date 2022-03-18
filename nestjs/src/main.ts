@@ -29,6 +29,8 @@ async function bootstrap() {
     cookie: { maxAge: 86400000 }
   });
   app.use(sessionMiddleware)
+  app.useWebSocketAdapter
+
 
   //app.use(csurf());
   useContainer(app.select(AppModule), { fallbackOnErrors: true })
