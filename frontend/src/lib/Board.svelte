@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';◘
  export let data: any = ["-", "-", "-", "-", "-", "-", "-", "-", "-"];
  export let currentPlayer: string;
- import { createEventDispatcher } from 'svelte';
+ let gameOver: boolean = false;
  const dispatch = createEventDispatcher();
   const handleClick = (e, tile) =>{
     data[tile]= currentPlayer;
@@ -11,7 +12,7 @@
 
 <div class="grid grid-cols-3 justify-items-center  bg-white">
   {#each data as tile, index}
-    <button disabled="{tile!="-"}" class="tttbtn" on:click="{((e)=>{handleClick(e,index)})}">
+    <button disabled="{tile!="-" || gameOver}" class="tttbtn" on:click="{((e)=>{handleClick(e,index)})}">
       {tile}
     </button>
   {/each}
