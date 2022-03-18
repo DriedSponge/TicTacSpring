@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 export class SessionGuard implements CanActivate {
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         const req = context.switchToHttp().getRequest();
-        console.log(req.session)
+        console.log(context.switchToWs())
         if (req.session.name && req.session.uid) {
             return true;
         }else{
