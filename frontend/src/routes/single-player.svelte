@@ -27,7 +27,7 @@
     console.log("Resetting...");
     window.localStorage.removeItem("singlePlayerGameState");
     currentPlayer = "X";
-    data = ["-", "-", "-", "-", "-", "-", "-", "-", "-"];
+    data = Array(9).fill("-");
     toast.push({ msg: "Resetting!", duration: 3000 });
   };
 </script>
@@ -40,9 +40,17 @@
       </h1>
     </div>
     <Board {currentPlayer} on:turn={handleTurn} bind:data />
-    <button on:click={reset}>Reset</button>
+    <br />
+    <div class="text-center">
+      <button on:click={reset} class="reset">Reset</button>
+    </div>
   </div>
 </div>
 
 <style lang="postcss">
+  .reset {
+    @apply bg-blue-500 text-white appearance-none font-bold px-4 py-2 rounded-md text-center shadow-lg;
+    @apply hover:bg-blue-600;
+    @apply transition ease-in-out duration-300;
+  }
 </style>

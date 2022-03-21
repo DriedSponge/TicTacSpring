@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
- export let data: string[] = ["-", "-", "-", "-", "-", "-", "-", "-", "-"];
+ export let data: string[] = Array(9).fill("-");
  export let currentPlayer: string;
  let gameOver: boolean = false;
  const dispatch = createEventDispatcher();
