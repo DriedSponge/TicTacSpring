@@ -19,7 +19,6 @@
   }
 </script>
 
-<SvelteToast />
 <svelte:head>
   <title>Tic Tac Toe!</title>
 </svelte:head>
