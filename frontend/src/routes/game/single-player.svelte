@@ -3,9 +3,9 @@
   import Board from "$lib/Board.svelte";
   import { onMount } from "svelte";
   import { toast } from "@zerodevx/svelte-toast";
-
+  import {Tile} from "$lib/Tile";
   let currentPlayer: string = "X";
-  let data: string[];
+  let data: Tile[];
   onMount(() => {
     if (window.localStorage.getItem("singlePlayerGameState") != null) {
       let savedGameData = JSON.parse(
@@ -27,7 +27,7 @@
     console.log("Resetting...");
     window.localStorage.removeItem("singlePlayerGameState");
     currentPlayer = "X";
-    data = Array(9).fill("-");
+    data = Array.from({ length: 9 }, () => (new Tile("-")));
     toast.push({ msg: "Resetting!", duration: 3000 });
   };
 </script>
