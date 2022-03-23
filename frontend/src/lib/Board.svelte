@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { Tile } from "./Tile";
-  export let data: Tile[] = Array.from({ length: 9 }, () => (new Tile("-")));
+  export let data: Tile[] = Array.from({ length: 9 }, () => new Tile("-"));
   export let currentPlayer: string;
   let gameOver: boolean = false;
   const dispatch = createEventDispatcher();
@@ -10,17 +10,20 @@
   };
 </script>
 
-<div class="grid grid-cols-3 justify-items-center  bg-white">
+<div class="grid grid-cols-3 justify-items-center gap-2 bg-transparent shadow-xl">
   {#each data as tile, index}
     <button
       disabled={tile.value != "-" || gameOver}
       class="tttbtn"
+      class:x={tile.value == "X"}
+      class:o={tile.value == "O"}
+      class:taken={tile.value != "-"}
       on:click={(e) => {
         tile.value = currentPlayer;
         handleClick(e, index);
       }}
     >
-    {tile.value}
+      {tile.value}
     </button>
   {/each}
 </div>
@@ -28,6 +31,15 @@
 <style lang="postcss">
   .tttbtn {
     @apply transition hover:bg-gray-300;
-    @apply text-4xl border-black border md:text-5xl bg-white  px-3 py-2 w-full font-bold;
+    @apply text-4xl md:text-5xl bg-white  px-3 py-2 w-full font-bold rounded-lg shadow-sm border-2 border-transparent;
+  }
+  .taken{
+    @apply text-white border-white border-2
+  }
+  .x {
+    @apply bg-red-500 hover:bg-red-500;
+  }
+  .o {
+    @apply bg-blue-500 hover:bg-blue-500;
   }
 </style>
