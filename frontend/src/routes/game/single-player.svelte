@@ -3,18 +3,22 @@
   import Board from "$lib/Board.svelte";
   import { onMount } from "svelte";
   import { toast } from "@zerodevx/svelte-toast";
-  import {Tile} from "$lib/Tile";
+  import { Tile } from "$lib/Tile";
+  import Loading from "$lib/Loading.svelte";
   let currentPlayer: string = "X";
   let data: Tile[];
-  onMount(() => {
+  async function loadData() {
     if (window.localStorage.getItem("singlePlayerGameState") != null) {
       let savedGameData = JSON.parse(
         window.localStorage.getItem("singlePlayerGameState")
       );
       currentPlayer = savedGameData.player;
       data = savedGameData.data;
+      return true;
+    } else {
+      return true;
     }
-  });
+  }
   function handleTurn(event) {
     console.log(event.detail.data);
     currentPlayer = currentPlayer == "X" ? "O" : "X";
@@ -27,25 +31,29 @@
     console.log("Resetting...");
     window.localStorage.removeItem("singlePlayerGameState");
     currentPlayer = "X";
-    data = Array.from({ length: 9 }, () => (new Tile("-")));
+    data = Array.from({ length: 9 }, () => new Tile("-"));
     toast.push({ msg: "Resetting!", duration: 3000 });
   };
 </script>
 
-<div class="flex justify-center">
-  <div class="container my-auto px-2 max-w-4xl">
-    <div class="content-center text-center flex flex-col items-center">
-      <h1 class="text-white font-bold text-4xl my-5">
-        {currentPlayer}'s Turn!
-      </h1>
-    </div>
-    <Board {currentPlayer} on:turn={handleTurn} bind:data />
-    <br />
-    <div class="text-center">
-      <button on:click={reset} class="reset">Reset</button>
+{#await loadData()}
+  <Loading>Loading Game Data..</Loading>
+{:then}
+  <div class="flex justify-center">
+    <div class="container my-auto px-2 max-w-4xl">
+      <div class="content-center text-center flex flex-col items-center">
+        <h1 class="text-white font-bold text-4xl my-5">
+          {currentPlayer}'s Turn!
+        </h1>
+      </div>
+      <Board {currentPlayer} on:turn={handleTurn} bind:data />
+      <br />
+      <div class="text-center">
+        <button on:click={reset} class="reset">Reset</button>
+      </div>
     </div>
   </div>
-</div>
+{/await}
 
 <style lang="postcss">
   .reset {
