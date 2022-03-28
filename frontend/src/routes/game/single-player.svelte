@@ -20,7 +20,6 @@
     }
   }
   function handleTurn(event) {
-    console.log(event.detail.data);
     currentPlayer = currentPlayer == "X" ? "O" : "X";
     window.localStorage.setItem(
       "singlePlayerGameState",
@@ -28,7 +27,7 @@
     );
   }
   const reset = () => {
-    console.log("Resetting...");
+    console.debug("Resetting...");
     window.localStorage.removeItem("singlePlayerGameState");
     currentPlayer = "X";
     data = Array.from({ length: 9 }, () => new Tile("-"));
@@ -49,14 +48,16 @@
       <Board {currentPlayer} on:turn={handleTurn} bind:data />
       <br />
       <div class="text-center">
-        <button on:click={reset} class="reset">Reset</button>
+        <button on:click={reset} class="btn">Reset</button>
+        <a href="/" class="btn">Go Home</a>
+
       </div>
     </div>
   </div>
 {/await}
 
 <style lang="postcss">
-  .reset {
+  .btn {
     @apply bg-blue-500 text-white appearance-none font-bold px-4 py-2 rounded-md text-center shadow-lg;
     @apply hover:bg-blue-600;
     @apply transition ease-in-out duration-300;

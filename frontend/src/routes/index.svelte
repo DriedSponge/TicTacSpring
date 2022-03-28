@@ -7,6 +7,7 @@
   import Loading from "$lib/Loading.svelte";
   import axios from "axios";
   import { goto } from "$app/navigation";
+  import AuthButton from "$lib/forms/authButton.svelte";
 
   function createGame() {
     axios
@@ -23,14 +24,11 @@
   <title>Tic Tac Toe!</title>
 </svelte:head>
 
-
 <br />
 <div class="flex justify-center">
   <div class="container my-auto px-2 max-w-4xl">
     {#await createClient()}
-      <Loading >
-        Loading...
-      </Loading>
+      <Loading>Loading...</Loading>
     {:then val}
       {#if !$isAuthenticated}
         <Login />
@@ -48,5 +46,16 @@
         <Menubutton on:click={logout}>Change Name</Menubutton>
       {/if}
     {/await}
+    <br />
+    <div class="text-center">
+      <a class="singleplayer" sveltekit:prefetch href="/game/single-player">Play Single Player</a>
+    </div>
   </div>
 </div>
+<style lang="postcss">
+  .singleplayer{
+    @apply bg-blue-500 text-white appearance-none font-bold px-4 py-2 rounded-md text-center shadow-lg;
+    @apply hover:bg-blue-600;
+    @apply transition ease-in-out duration-300;
+  }
+</style>
