@@ -15,7 +15,15 @@ export class Tile {
     getWinner():boolean{return this.winner}
     toggleWinner(){this.winner = !this.winner}
 
-    static checkForWinenr(){
-
+    static checkHoz(state:Tile[]){
+        for(let i=0;i<3; i++){
+            console.log(state[i].value)
+        }
+        for(let i=3;i<6; i++){
+            console.log(state[i].value)
+        }
+        for(let i=6;i<9; i++){
+            console.log(state[i].value)
+        }
     }
 }
