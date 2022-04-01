@@ -10,7 +10,7 @@
   };
 </script>
 
-<div class="grid grid-cols-3 justify-items-center gap-2 bg-transparent shadow-xl">
+<div class="grid grid-cols-3 justify-items-center gap-2 bg-transparent ">
   {#each data as tile, index}
     <button
       disabled={tile.value != "-" || gameOver}
