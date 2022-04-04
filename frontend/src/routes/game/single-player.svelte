@@ -6,7 +6,7 @@
   import { Tile } from "$lib/Tile";
   import Loading from "$lib/Loading.svelte";
   let currentPlayer: string = "X";
-  let data: Tile[];
+  let data: Tile[][];
   async function loadData() {
     if (window.localStorage.getItem("singlePlayerGameState") != null) {
       let savedGameData = JSON.parse(
@@ -31,7 +31,9 @@
     console.debug("Resetting...");
     window.localStorage.removeItem("singlePlayerGameState");
     currentPlayer = "X";
-    data = Array.from({ length: 9 }, () => new Tile("-"));
+    data = Array.from({ length: 3 }, () =>
+      Array.from({ length: 3 }, () => new Tile("-"))
+    );
     toast.push({ msg: "Resetting!", duration: 3000 });
   };
 </script>
@@ -51,7 +53,6 @@
       <div class="text-center">
         <button on:click={reset} class="btn">Reset</button>
         <a href="/" class="btn">Go Home</a>
-
       </div>
     </div>
   </div>

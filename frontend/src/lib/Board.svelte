@@ -1,17 +1,20 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { Tile } from "./Tile";
-  export let data: Tile[] = Array.from({ length: 9 }, () => new Tile("-"));
+  export let data: Tile[][] = Array.from({ length: 3 }, () => 
+  Array.from({length:3}, () => new Tile("-"))
+  );
   export let currentPlayer: string;
   let gameOver: boolean = false;
   const dispatch = createEventDispatcher();
-  const handleClick = (e, tile) => {
+  const handleClick = (e) => {
     dispatch("turn", { btnEvent: e, data: data });
   };
 </script>
 
 <div class="grid grid-cols-3 justify-items-center gap-2 bg-transparent ">
-  {#each data as tile, index}
+  {#each data as row, index}
+  {#each row as tile, index2}
     <button
       disabled={tile.value != "-" || gameOver}
       class="tttbtn"
@@ -20,11 +23,13 @@
       class:taken={tile.value != "-"}
       on:click={(e) => {
         tile.value = currentPlayer;
-        handleClick(e, index);
+        handleClick(e);
       }}
     >
       {tile.value}
     </button>
+    {/each}
+
   {/each}
 </div>
 
