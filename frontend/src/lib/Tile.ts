@@ -15,15 +15,22 @@ export class Tile {
     getWinner():boolean{return this.winner}
     toggleWinner(){this.winner = !this.winner}
 
-    static checkHoz(state:Tile[]){
-        for(let i=0;i<3; i++){
-            console.log(state[i].value)
-        }
-        for(let i=3;i<6; i++){
-            console.log(state[i].value)
-        }
-        for(let i=6;i<9; i++){
-            console.log(state[i].value)
-        }
+    static checkForwardDiagonal(state:Tile[][]){
+        let result: string ="";
+        for(let i = 0; i<state.length; i++){
+            result+= state[i][i].value
+        };
+        console.log(result);
+        return result;
+    }
+    static checkBackwardDiagonal(state:Tile[][]){
+        let result: string ="";
+        let j = 0;
+        for(let i = state.length-1; i>=0; i--){
+            result+= state[i][j].value
+            j++
+        };
+        console.log(result);
+        return result;
     }
 }

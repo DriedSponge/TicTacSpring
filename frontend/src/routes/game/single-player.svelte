@@ -25,7 +25,7 @@
       "singlePlayerGameState",
       JSON.stringify({ player: currentPlayer, data: event.detail.data })
     );
-    Tile.checkHoz(event.detail.data);
+    Tile.checkBackwardDiagonal(event.detail.data);
   }
   const reset = () => {
     console.debug("Resetting...");
