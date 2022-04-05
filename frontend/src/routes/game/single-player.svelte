@@ -25,7 +25,6 @@
       "singlePlayerGameState",
       JSON.stringify({ player: currentPlayer, data: event.detail.data })
     );
-    Tile.checkXY(event.detail.data);
   }
   const reset = () => {
     console.debug("Resetting...");

@@ -18,8 +18,13 @@ export class Tile {
     public toString():string{
         return this.value;
     }
-    
-    static checkForwardDiagonal(state:Tile[][]){
+    public checkWinner(player:String){
+        let winningCase:string = `${player}${player}${player}`;
+    }
+    public convertToStringForCheck(group:Tile[]){
+
+    }
+    static getForwardDiagonal(state:Tile[][]){
         let result: string ="";
         for(let i = 0; i<state.length; i++){
             result+= state[i][i].value
@@ -40,6 +45,7 @@ export class Tile {
     static checkXY(state:Tile[][]){
         let result: string ="";
         for(let i = 0; i<state.length; i++){
+            let result: string ="";
             for(let j= 0; j<state[i].length; j++){
                 result+=state[i][j].value;
             }
