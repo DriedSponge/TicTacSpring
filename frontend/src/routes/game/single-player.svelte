@@ -46,7 +46,9 @@
     toast.push({ msg: "Resetting!", duration: 3000 });
   };
 </script>
-
+<svelte:head>
+  <title>Single Player</title>
+</svelte:head>
 {#await loadData()}
   <Loading>Loading Game Data..</Loading>
 {:then}
