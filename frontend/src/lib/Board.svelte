@@ -5,7 +5,7 @@
   Array.from({length:3}, () => new Tile("-"))
   );
   export let currentPlayer: string;
-  let gameOver: boolean = false;
+  export let gameOver: boolean = false;
   const dispatch = createEventDispatcher();
   const handleClick = (e) => {
     dispatch("turn", { btnEvent: e, data: data });
@@ -20,6 +20,7 @@
       class="tttbtn"
       class:x={tile.value == "X"}
       class:o={tile.value == "O"}
+      class:winner={tile.winner}
       class:taken={tile.value != "-"}
       on:click={(e) => {
         tile.value = currentPlayer;
@@ -46,5 +47,9 @@
   }
   .o {
     @apply bg-blue-500 hover:bg-blue-500;
+  }
+  .winner{
+    @apply text-white bg-yellow-500 hover:bg-yellow-500 shadow-xl
+
   }
 </style>

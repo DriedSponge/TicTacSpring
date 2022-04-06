@@ -1,4 +1,5 @@
 export class Tile {
+    // TO-DO: Clean up.
     value: string;
     winner: boolean = false;
     constructor(value: string) {
@@ -18,42 +19,69 @@ export class Tile {
     public toString():string{
         return this.value;
     }
-    public checkWinner(player:String){
+    public static  checkWinner(player:String, state: Tile[][]) : boolean{
         let winningCase:string = `${player}${player}${player}`;
+        if(Tile.convertToStringForCheck(Tile.getForwardDiagonal(state)) == winningCase){
+            Tile.setWinners(Tile.getForwardDiagonal(state));
+            return true;
+        }else if(Tile.convertToStringForCheck(Tile.getBackwardDiagonal(state)) == winningCase){
+            Tile.setWinners(Tile.getBackwardDiagonal(state));
+            return true;
+        }else if(this.checkXY(state,winningCase)){
+            return true;
+        }
+        return false;
     }
-    public convertToStringForCheck(group:Tile[]){
-
+    private static setWinners(group:Tile[]){
+        for(let i =0; i<group.length;i++){
+            group[i].winner = true;
+        }
     }
-    static getForwardDiagonal(state:Tile[][]){
-        let result: string ="";
-        for(let i = 0; i<state.length; i++){
-            result+= state[i][i].value
-        };
-        console.log(result);
+    public static  convertToStringForCheck(group:Tile[]):string{
+        let result = "";
+        for(let i = 0; i<3;i++){
+            result+= group[i].value;
+        }
         return result;
     }
-    static checkBackwardDiagonal(state:Tile[][]){
-        let result: string ="";
+    static getForwardDiagonal(state:Tile[][]): Tile[]{
+        let result: Tile[] = new Array<Tile>();
+        for(let i = 0; i<state.length; i++){
+            result.push(state[i][i]);
+        };
+        return result;
+    }
+    static getBackwardDiagonal(state:Tile[][]): Tile[]{
+        let result: Tile[] = new Array<Tile>();
         let j = 0;
         for(let i = state.length-1; i>=0; i--){
-            result+= state[i][j].value
+            result.push(state[i][j])
             j++
         };
-        console.log(result);
         return result;
     }
-    static checkXY(state:Tile[][]){
+    static checkXY(state:Tile[][], winningCase:string){
         let result: string ="";
         for(let i = 0; i<state.length; i++){
             let result: string ="";
             for(let j= 0; j<state[i].length; j++){
                 result+=state[i][j].value;
             }
+            if(result == winningCase){
+                this.setWinners(state[i]);
+                return true;
+            }
+            result ="";
             for(let j= 0; j<state[i].length; j++){
                 result+=state[j][i].value;
             }
+            if(result == winningCase){
+                for(let j= 0; j<state[i].length; j++){
+                    state[j][i].winner = true;
+                }
+                return true;
+            }
         };
-        console.log(result);
-        return result;
+        return false;
     }
 }
