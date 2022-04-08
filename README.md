@@ -6,5 +6,9 @@ This is a web based tic tac toe game made with SvelteKite, NestJS, and TailwindC
 
 You can play right now by visiting [https://ttt.driedsponge.net](https://ttt.driedsponge.net).
 
+If you want to run it locally:
 
-
+1. Make sure you have node installed on your machine.
+2. Clone the project and install the packages. (npm install or pnpm install)
+3. You can enter the `nestjs` folder and start up the backend by running `npm run start:dev`.
+4. Next you can enter the `frontend` folder and run `npm run dev`.
