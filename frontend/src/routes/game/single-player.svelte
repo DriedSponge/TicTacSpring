@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import { toast } from "@zerodevx/svelte-toast";
   import { Tile } from "$lib/Tile";
+  import { goto } from "$app/navigation";
   import Loading from "$lib/Loading.svelte";
   let currentPlayer: string = "X";
   let winner: string;
@@ -69,7 +70,7 @@
       <br />
       <div class="text-center">
         <button on:click={reset} class="btn">Reset</button>
-        <a href="/" class="btn">Go Home</a>
+        <a href="/" on:click={(()=>{reset(); goto("/")})} class="btn">Go Home</a>
       </div>
     </div>
   </div>
