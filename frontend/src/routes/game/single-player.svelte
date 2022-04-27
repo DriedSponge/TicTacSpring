@@ -47,6 +47,7 @@
       Array.from({ length: 3 }, () => new Tile("-"))
     );
     winner = "";
+    tied=false;
     toast.push({ msg: "Resetting!", duration: 3000 });
   };
 </script>
