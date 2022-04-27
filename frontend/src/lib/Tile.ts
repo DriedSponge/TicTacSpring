@@ -43,6 +43,17 @@ export class Tile {
         return false;
     }
 
+    public static checkTie(state:Tile[][]):boolean{
+        for(let i = 0; i<3;i++){
+            for(let j =0; j<state[i].length;j++){
+                if(state[i][j].value=="-"){
+                    return false;
+                }
+            }
+        }
+        return true
+    }
+
     private static setWinners(group: Tile[]) {
         for (let i = 0; i < group.length; i++) {
             group[i].winner = true;

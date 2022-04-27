@@ -25,6 +25,7 @@
     }
   }
   function handleTurn(event) {
+    console.log(Tile.checkTie(event.detail.data) +" TIED")
     if(Tile.checkWinner(currentPlayer, event.detail.data)){
       winner = currentPlayer;
     }else{
@@ -59,7 +60,7 @@
         {#if winner == "X" || winner =="O"}
         <h1 class="text-white font-bold text-4xl my-5">
           {winner} has won! They are better than you!!
-        </h1>
+        </h1>4
         {:else}
         <h1 class="text-white font-bold text-4xl my-5">
           {currentPlayer}'s Turn!
