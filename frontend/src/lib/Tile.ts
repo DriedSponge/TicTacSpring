@@ -43,6 +43,13 @@ export class Tile {
         return false;
     }
 
+    /**
+     * A method that checks if all the tiles are occupied. It must be called after {@link Tile.checkWinner}
+     * other wise it will detect a tie when there might actually be a winner. It simply checks to make sure
+     * there are no "-"'s left on the board.
+     * @param state The current state of the game.
+     * @returns True or false, whether the game is tied.
+     */
     public static checkTie(state:Tile[][]):boolean{
         for(let i = 0; i<3;i++){
             for(let j =0; j<state[i].length;j++){
