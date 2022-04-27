@@ -9,6 +9,7 @@
   let currentPlayer: string = "X";
   let winner: string;
   let data: Tile[][];
+  let tied: boolean = false;
   async function loadData() {
     if (window.localStorage.getItem("singlePlayerGameState") != null) {
       let savedGameData = JSON.parse(
@@ -25,9 +26,10 @@
     }
   }
   function handleTurn(event) {
-    console.log(Tile.checkTie(event.detail.data) +" TIED")
     if(Tile.checkWinner(currentPlayer, event.detail.data)){
       winner = currentPlayer;
+    }else if(Tile.checkTie(event.detail.data)){
+      tied = true;
     }else{
       currentPlayer = currentPlayer == "X" ? "O" : "X";
     }
@@ -60,14 +62,18 @@
         {#if winner == "X" || winner =="O"}
         <h1 class="text-white font-bold text-4xl my-5">
           {winner} has won! They are better than you!!
-        </h1>4
+        </h1>
+        {:else if tied}
+        <h1 class="text-white font-bold text-4xl my-5">
+          The game has tied! You both suck!
+        </h1>
         {:else}
         <h1 class="text-white font-bold text-4xl my-5">
           {currentPlayer}'s Turn!
         </h1>
         {/if}
       </div>
-      <Board {currentPlayer} on:turn={handleTurn} bind:data gameOver={winner == "X" || winner == "O"} />
+      <Board {currentPlayer} on:turn={handleTurn} bind:data gameOver={winner == "X" || winner == "O"|| tied} />
       <br />
       <div class="text-center">
         <button on:click={reset} class="btn">Reset</button>
