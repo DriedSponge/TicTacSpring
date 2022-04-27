@@ -17,8 +17,10 @@
       );
       currentPlayer = savedGameData.player;
       data = savedGameData.data;
-      if(Tile.checkWinner(currentPlayer, savedGameData.data)){
+      if (Tile.checkWinner(currentPlayer, savedGameData.data)) {
         winner = currentPlayer;
+      } else if (Tile.checkTie(savedGameData.data)) {
+        tied = true;
       }
       return true;
     } else {
@@ -26,18 +28,17 @@
     }
   }
   function handleTurn(event) {
-    if(Tile.checkWinner(currentPlayer, event.detail.data)){
+    if (Tile.checkWinner(currentPlayer, event.detail.data)) {
       winner = currentPlayer;
-    }else if(Tile.checkTie(event.detail.data)){
+    } else if (Tile.checkTie(event.detail.data)) {
       tied = true;
-    }else{
+    } else {
       currentPlayer = currentPlayer == "X" ? "O" : "X";
     }
     window.localStorage.setItem(
       "singlePlayerGameState",
       JSON.stringify({ player: currentPlayer, data: event.detail.data })
     );
-    
   }
   const reset = () => {
     console.debug("Resetting...");
@@ -47,10 +48,11 @@
       Array.from({ length: 3 }, () => new Tile("-"))
     );
     winner = "";
-    tied=false;
+    tied = false;
     toast.push({ msg: "Resetting!", duration: 3000 });
   };
 </script>
+
 <svelte:head>
   <title>Single Player</title>
 </svelte:head>
@@ -60,25 +62,37 @@
   <div class="flex justify-center">
     <div class="container my-auto px-2 max-w-4xl">
       <div class="content-center text-center flex flex-col items-center">
-        {#if winner == "X" || winner =="O"}
-        <h1 class="text-white font-bold text-4xl my-5">
-          {winner} has won! They are better than you!!
-        </h1>
+        {#if winner == "X" || winner == "O"}
+          <h1 class="text-white font-bold text-4xl my-5">
+            {winner} has won! They are better than you!!
+          </h1>
         {:else if tied}
-        <h1 class="text-white font-bold text-4xl my-5">
-          The game has tied! You both suck!
-        </h1>
+          <h1 class="text-white font-bold text-4xl my-5">
+            The game has tied! You both suck!
+          </h1>
         {:else}
-        <h1 class="text-white font-bold text-4xl my-5">
-          {currentPlayer}'s Turn!
-        </h1>
+          <h1 class="text-white font-bold text-4xl my-5">
+            {currentPlayer}'s Turn!
+          </h1>
         {/if}
       </div>
-      <Board {currentPlayer} on:turn={handleTurn} bind:data gameOver={winner == "X" || winner == "O"|| tied} />
+      <Board
+        {currentPlayer}
+        on:turn={handleTurn}
+        bind:data
+        gameOver={winner == "X" || winner == "O" || tied}
+      />
       <br />
       <div class="text-center">
         <button on:click={reset} class="btn">Reset</button>
-        <a href="/" on:click={(()=>{reset(); goto("/")})} class="btn">Go Home</a>
+        <a
+          href="/"
+          on:click={() => {
+            reset();
+            goto("/");
+          }}
+          class="btn">Go Home</a
+        >
       </div>
     </div>
   </div>
