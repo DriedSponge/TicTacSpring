@@ -10,6 +10,7 @@
   let winner: string;
   let data: Tile[][];
   let tied: boolean = false;
+
   async function loadData() {
     if (window.localStorage.getItem("singlePlayerGameState") != null) {
       let savedGameData = JSON.parse(
@@ -17,9 +18,9 @@
       );
       currentPlayer = savedGameData.player;
       data = savedGameData.data;
-      if (Tile.checkWinner(currentPlayer, savedGameData.data)) {
+      if (Tile.checkWinner(currentPlayer, data)) {
         winner = currentPlayer;
-      } else if (Tile.checkTie(savedGameData.data)) {
+      } else if (Tile.checkTie(data)) {
         tied = true;
       }
       return true;
@@ -27,6 +28,7 @@
       return true;
     }
   }
+
   function handleTurn(event) {
     if (Tile.checkWinner(currentPlayer, event.detail.data)) {
       winner = currentPlayer;
@@ -40,6 +42,7 @@
       JSON.stringify({ player: currentPlayer, data: event.detail.data })
     );
   }
+
   const reset = () => {
     console.debug("Resetting...");
     window.localStorage.removeItem("singlePlayerGameState");
