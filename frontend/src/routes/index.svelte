@@ -27,7 +27,7 @@
 <br />
 <div class="flex justify-center">
   <div class="container my-auto px-2 max-w-4xl">
-    <!-- {#await createClient()}
+    {#await createClient()}
       <Loading>Loading...</Loading>
     {:then val}
       {#if !$isAuthenticated}
@@ -45,7 +45,7 @@
         <br />
         <Menubutton on:click={logout}>Change Name</Menubutton>
       {/if}
-    {/await} -->
+    {/await}
     <br />
     <div class="text-center">
       <a class="singleplayer" sveltekit:prefetch href="/game/single-player">Play Single Player</a>
