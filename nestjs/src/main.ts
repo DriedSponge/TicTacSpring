@@ -6,6 +6,7 @@ import { useContainer, ValidationError } from 'class-validator';
 import * as cookieParser from 'cookie-parser';
 import * as csurf from 'csurf';
 import helmet from 'helmet';
+import {SessionSocketAdapter} from "./SessionSocketAdapter";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
@@ -22,14 +23,8 @@ async function bootstrap() {
   }));
   app.use(cookieParser());
 
-  const sessionMiddleware = session({
-    secret: 'my-secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 86400000 }
-  });
-  app.use(sessionMiddleware)
-  app.useWebSocketAdapter
+  
+  app.useWebSocketAdapter(new SessionSocketAdapter(app))
 
 
   //app.use(csurf());
