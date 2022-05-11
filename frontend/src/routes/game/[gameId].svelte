@@ -3,11 +3,24 @@
   import Board from "$lib/Board.svelte";
   import { goto } from "$app/navigation";
   import { io } from "socket.io-client";
-  
-  const socket = io("http://localhost:8080/",{withCredentials:true});
-  socket.on('gameEvent', (data) => console.log(data));
-  socket.emit('joinGame',{gameId:1111})
+  import { onMount, onDestroy } from "svelte";
+  let chatMsg: string = "";
+
   let revealCode: boolean = false;
+  const socket = io("http://localhost:8080/", { withCredentials: true });
+
+  socket.on("gameEvent", (data) => console.log(data));
+  socket.on("chatEvent", (data) => console.log(data));
+  socket.emit("joinGame", { gameId: 1111 });
+  onMount(async () => {});
+  onDestroy(async ()=>{
+    socket.close();
+  })
+  function sendMsg() {
+    socket.emit("chatMessage", { content: chatMsg, gameId: 1111 });
+    chatMsg = "";
+    console.log("Sending " + chatMsg);
+  }
 </script>
 
 <div class="flex justify-center">
@@ -17,25 +30,29 @@
         Waiting for opponent...
       </h1>
       <div class="my-5 w-full">
-        <button class="btn" on:click="{(()=>revealCode=!revealCode)}">
-            {#if revealCode}
+        <button class="btn" on:click={() => (revealCode = !revealCode)}>
+          {#if revealCode}
             {$page.params.gameId}
-            {:else}
+          {:else}
             Click to reveal code!
-            {/if}
+          {/if}
         </button>
-        <button on:click="{(()=>goto("/"))}" class="btn">Exit</button>
+        <button on:click={() => goto("/")} class="btn">Exit</button>
       </div>
-      
-
     </div>
     <Board />
+    <br />
+    <form on:submit|preventDefault={sendMsg}>
+      <input bind:value={chatMsg} placeholder="Enter a nice message..." />
+      <button type="submit">Send</button>
+    </form>
   </div>
 </div>
+
 <style lang="postcss">
-.btn{
-    @apply bg-white max-w-fit p-2 rounded-lg font-bold select-none shadow-2xl inline ;
+  .btn {
+    @apply bg-white max-w-fit p-2 rounded-lg font-bold select-none shadow-2xl inline;
     @apply hover:text-blue-500;
     @apply transition-colors ease-in-out duration-300;
-}
+  }
 </style>

@@ -12,7 +12,6 @@ export class SessionwsGuard implements CanActivate {
     if (wssession.name && wssession.uid) {
       return true;
     } else {
-      console.log("fail2")
       return false
     }
   }
