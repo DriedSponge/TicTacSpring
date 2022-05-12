@@ -5,19 +5,33 @@
   import { io } from "socket.io-client";
   import { onMount, onDestroy } from "svelte";
   let chatMsg: string = "";
+  interface ChatMessage {
+    from: string;
+    content: string;
+    self?: boolean;
+  }
+  let chatMsgs: ChatMessage[] = [];
 
   let revealCode: boolean = false;
   const socket = io("http://localhost:8080/", { withCredentials: true });
 
   socket.on("gameEvent", (data) => console.log(data));
-  socket.on("chatEvent", (data) => console.log(data));
-  socket.emit("joinGame", { gameId: 1111 });
-  onMount(async () => {});
-  onDestroy(async ()=>{
+
+  socket.on("chatEvent", (data) => {
+    console.log("Received Chat Message From " + data.from);
+    chatMsgs = [...chatMsgs, { from: data.from, content: data.content }];
+    console.log(chatMsgs);
+  });
+
+  onMount(async () => {
+    socket.emit("joinGame", { gameId: 1111 });
+  });
+  onDestroy(async () => {
     socket.close();
-  })
+  });
   function sendMsg() {
     socket.emit("chatMessage", { content: chatMsg, gameId: 1111 });
+    chatMsgs = [...chatMsgs, { from: "You", content: chatMsg , self:true}];
     chatMsg = "";
     console.log("Sending " + chatMsg);
   }
@@ -42,10 +56,19 @@
     </div>
     <Board />
     <br />
-    <form on:submit|preventDefault={sendMsg}>
-      <input bind:value={chatMsg} placeholder="Enter a nice message..." />
-      <button type="submit">Send</button>
-    </form>
+    <div class="bg-white p-4 rounded-lg ">
+      <h1 class="text-2xl font-bold">Tic Tac Chat</h1>
+      <div class="h-64 overflow-y-auto">
+        {#each chatMsgs as message}
+          <p  class="snap-y snap-center px-2 my-auto" class:self={message.self}><strong>{message.from}:</strong> {message.content}</p>
+          {:else}
+          <h2 class="italic text-lg">No messages yet...</h2>
+        {/each}
+      </div>
+      <form   on:submit|preventDefault={sendMsg} >
+        <input class="chatInput" bind:value={chatMsg} placeholder="Enter a nice message..." />
+      </form>
+    </div>
   </div>
 </div>
 
@@ -54,5 +77,12 @@
     @apply bg-white max-w-fit p-2 rounded-lg font-bold select-none shadow-2xl inline;
     @apply hover:text-blue-500;
     @apply transition-colors ease-in-out duration-300;
+  }
+  .self{
+    @apply bg-blue-500 bg-opacity-40;
+    @apply border-l-2 border-blue-400
+  }
+  .chatInput{
+    @apply px-4 py-2 rounded-md shadow-xl border-black border w-full
   }
 </style>
