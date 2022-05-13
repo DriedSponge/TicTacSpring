@@ -15,7 +15,8 @@
       .then((res) => {
         // @ts-ignore
         user.gameId = res.data.gameId;
-        goto("/game/" + res.data.gameId);
+        window.localStorage.setItem("code",res.data.gameId);
+        goto("/game");
       });
   }
 </script>
@@ -41,7 +42,7 @@
         <br />
         <Menubutton on:click={createGame}>Create Game</Menubutton>
         <br />
-        <Menubutton link="/login">Join Game</Menubutton>
+        <Menubutton>Join Game</Menubutton>
         <br />
         <Menubutton on:click={logout}>Change Name</Menubutton>
       {/if}

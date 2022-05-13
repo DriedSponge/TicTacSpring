@@ -5,6 +5,7 @@
   import { io } from "socket.io-client";
   import { onMount, onDestroy } from "svelte";
   let chatMsg: string = "";
+  let code:string = "";
   interface ChatMessage {
     from: string;
     content: string;
@@ -24,13 +25,14 @@
   });
 
   onMount(async () => {
-    socket.emit("joinGame", { gameId: 1111 });
+    code=window.localStorage.getItem("code")
+    socket.emit("joinGame", { gameId: code });
   });
   onDestroy(async () => {
     socket.close();
   });
   function sendMsg() {
-    socket.emit("chatMessage", { content: chatMsg, gameId: 1111 });
+    socket.emit("chatMessage", { content: chatMsg, gameId: code });
     chatMsgs = [...chatMsgs, { from: "You", content: chatMsg , self:true}];
     chatMsg = "";
     console.log("Sending " + chatMsg);
@@ -46,7 +48,7 @@
       <div class="my-5 w-full">
         <button class="btn" on:click={() => (revealCode = !revealCode)}>
           {#if revealCode}
-            {$page.params.gameId}
+            {code}
           {:else}
             Click to reveal code!
           {/if}
