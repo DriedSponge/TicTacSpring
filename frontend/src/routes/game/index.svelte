@@ -69,7 +69,7 @@
     <br />
     <div class="bg-white p-4 rounded-lg ">
       <h1 class="text-2xl font-bold">Tic Tac Chat</h1>
-      <div class="h-64 overflow-y-auto">
+      <div class="h-64 overflow-y-auto break-words">
         {#each chatMsgs as message}
           <p class="snap-y snap-center px-2 my-auto" class:self={message.self}>
             <strong>{message.from}:</strong>
