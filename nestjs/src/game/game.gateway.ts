@@ -11,6 +11,8 @@ export class GameGateway {
   @UseGuards(SessionwsGuard)
   handleMessage(socket: Socket, data: any): string {
     socket.join(data.gameId)
+    // @ts-ignore
+    socket.to(data.gameId).emit("playerJoin",{player:socket.handshake.session.name})
     return 'Hello world!';
   }
 

@@ -5,7 +5,8 @@
   import { io } from "socket.io-client";
   import { onMount, onDestroy } from "svelte";
   let chatMsg: string = "";
-  let code:string = "";
+  let opponent: string = "";
+  let code: string = "";
   interface ChatMessage {
     from: string;
     content: string;
@@ -16,7 +17,9 @@
   let revealCode: boolean = false;
   const socket = io("http://localhost:8080/", { withCredentials: true });
 
-  socket.on("gameEvent", (data) => console.log(data));
+  socket.on("playerJoin", (data) => {
+    opponent = data.player;
+  });
 
   socket.on("chatEvent", (data) => {
     console.log("Received Chat Message From " + data.from);
@@ -25,7 +28,7 @@
   });
 
   onMount(async () => {
-    code=window.localStorage.getItem("code")
+    code = window.localStorage.getItem("code");
     socket.emit("joinGame", { gameId: code });
   });
   onDestroy(async () => {
@@ -33,7 +36,7 @@
   });
   function sendMsg() {
     socket.emit("chatMessage", { content: chatMsg, gameId: code });
-    chatMsgs = [...chatMsgs, { from: "You", content: chatMsg , self:true}];
+    chatMsgs = [...chatMsgs, { from: "You", content: chatMsg, self: true }];
     chatMsg = "";
     console.log("Sending " + chatMsg);
   }
@@ -42,9 +45,15 @@
 <div class="flex justify-center">
   <div class="container my-auto px-2 max-w-4xl">
     <div class="content-center text-center flex flex-col items-center">
-      <h1 class="text-white font-bold text-4xl my-5 animate-pulse">
-        Waiting for opponent...
-      </h1>
+      {#if opponent != ""}
+        <h1 class="text-white font-bold text-4xl my-5">
+          Playing Agaist {opponent}
+        </h1>
+      {:else}
+        <h1 class="text-white font-bold text-4xl my-5 animate-pulse">
+          Waiting for opponent...
+        </h1>
+      {/if}
       <div class="my-5 w-full">
         <button class="btn" on:click={() => (revealCode = !revealCode)}>
           {#if revealCode}
@@ -62,13 +71,20 @@
       <h1 class="text-2xl font-bold">Tic Tac Chat</h1>
       <div class="h-64 overflow-y-auto">
         {#each chatMsgs as message}
-          <p  class="snap-y snap-center px-2 my-auto" class:self={message.self}><strong>{message.from}:</strong> {message.content}</p>
-          {:else}
+          <p class="snap-y snap-center px-2 my-auto" class:self={message.self}>
+            <strong>{message.from}:</strong>
+            {message.content}
+          </p>
+        {:else}
           <h2 class="italic text-lg">No messages yet...</h2>
         {/each}
       </div>
-      <form   on:submit|preventDefault={sendMsg} >
-        <input class="chatInput" bind:value={chatMsg} placeholder="Enter a nice message..." />
+      <form on:submit|preventDefault={sendMsg}>
+        <input
+          class="chatInput"
+          bind:value={chatMsg}
+          placeholder="Enter a nice message..."
+        />
       </form>
     </div>
   </div>
@@ -80,11 +96,11 @@
     @apply hover:text-blue-500;
     @apply transition-colors ease-in-out duration-300;
   }
-  .self{
+  .self {
     @apply bg-blue-500 bg-opacity-40;
-    @apply border-l-2 border-blue-400
+    @apply border-l-2 border-blue-400;
   }
-  .chatInput{
-    @apply px-4 py-2 rounded-md shadow-xl border-black border w-full
+  .chatInput {
+    @apply px-4 py-2 rounded-md shadow-xl border-black border w-full;
   }
 </style>
