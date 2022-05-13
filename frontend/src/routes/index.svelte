@@ -8,6 +8,7 @@
   import axios from "axios";
   import { goto } from "$app/navigation";
   import AuthButton from "$lib/forms/authButton.svelte";
+import Join from "./join.svelte";
 
   function createGame() {
     axios
@@ -15,9 +16,12 @@
       .then((res) => {
         // @ts-ignore
         user.gameId = res.data.gameId;
-        window.localStorage.setItem("code",res.data.gameId);
+        window.localStorage.setItem("code", res.data.gameId);
         goto("/game");
       });
+  }
+  function joinGame() {
+    goto("/join");
   }
 </script>
 
@@ -42,19 +46,22 @@
         <br />
         <Menubutton on:click={createGame}>Create Game</Menubutton>
         <br />
-        <Menubutton>Join Game</Menubutton>
+        <Menubutton on:click={joinGame}>Join Game</Menubutton>
         <br />
         <Menubutton on:click={logout}>Change Name</Menubutton>
       {/if}
     {/await}
     <br />
     <div class="text-center">
-      <a class="singleplayer" sveltekit:prefetch href="/game/single-player">Play Single Player</a>
+      <a class="singleplayer" sveltekit:prefetch href="/game/single-player"
+        >Play Single Player</a
+      >
     </div>
   </div>
 </div>
+
 <style lang="postcss">
-  .singleplayer{
+  .singleplayer {
     @apply bg-blue-500 text-white appearance-none font-bold px-4 py-2 rounded-md text-center shadow-lg;
     @apply hover:bg-blue-600;
     @apply transition ease-in-out duration-300;
