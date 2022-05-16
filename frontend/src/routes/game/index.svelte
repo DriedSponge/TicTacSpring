@@ -37,8 +37,8 @@
   function sendMsg() {
     socket.emit("chatMessage", { content: chatMsg, gameId: code });
     chatMsgs = [...chatMsgs, { from: "You", content: chatMsg, self: true }];
-    chatMsg = "";
     console.log("Sending " + chatMsg);
+    chatMsg = "";
   }
 </script>
 
