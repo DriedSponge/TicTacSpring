@@ -4,6 +4,9 @@
   import { goto } from "$app/navigation";
   import { io } from "socket.io-client";
   import { onMount, onDestroy } from "svelte";
+  import { object, string } from "yup";
+  import { toast } from "@zerodevx/svelte-toast";
+
   let chatMsg: string = "";
   let opponent: string = "";
   let code: string = "";
@@ -39,6 +42,31 @@
     chatMsgs = [...chatMsgs, { from: "You", content: chatMsg, self: true }];
     console.log("Sending " + chatMsg);
     chatMsg = "";
+  }
+  let loginSchema = object({
+    name: string()
+      .required("Please enter a message.")
+      .min(1, "Your message must be longer than 1 character.")
+      .max(100, "Your message must be shorther than 30 characters")
+      .nullable(),
+  });
+  async function validateChat() {
+    try {
+      await loginSchema.validate({ chatMsg }, { abortEarly: false });
+      return true;
+    } catch (err) {
+      console.log(err)
+      toast.push({
+        msg:"Invalid chat mesage",
+        duration: 4000,
+        pausable: true,
+        theme: {
+          "--toastBackground": "#F56565",
+          "--toastBarBackground": "#C53030",
+        },
+      });
+      return false;
+    }
   }
 </script>
 
