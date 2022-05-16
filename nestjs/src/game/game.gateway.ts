@@ -10,6 +10,7 @@ export class GameGateway {
   @SubscribeMessage('joinGame')
   @UseGuards(SessionwsGuard)
   handleMessage(socket: Socket, data: any): string {
+    // TO-DO: Should set session game id and be using it instead of sending it over network where it needs to be validated.
     socket.join(data.gameId)
     // @ts-ignore
     socket.to(data.gameId).emit("playerJoin",{player:socket.handshake.session.name})
