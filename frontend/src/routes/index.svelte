@@ -8,17 +8,15 @@
   import axios from "axios";
   import { goto } from "$app/navigation";
   import AuthButton from "$lib/forms/authButton.svelte";
-import Join from "./join.svelte";
+  import Join from "./join.svelte";
+import { io } from "socket.io-client";
 
   function createGame() {
-    axios
-      .post("http://localhost:8080/game/create", {}, { withCredentials: true })
-      .then((res) => {
-        // @ts-ignore
-        user.gameId = res.data.gameId;
-        window.localStorage.setItem("code", res.data.gameId);
+      const socket = io("http://localhost:8080/", { withCredentials: true });
+      socket.emit("createGame", {}, (response)=>{
+        window.localStorage.code = response;
         goto("/game");
-      });
+      })
   }
   function joinGame() {
     goto("/join");
