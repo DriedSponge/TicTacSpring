@@ -9,14 +9,14 @@
   import { goto } from "$app/navigation";
   import AuthButton from "$lib/forms/authButton.svelte";
   import Join from "./join.svelte";
-import { io } from "socket.io-client";
+  import { io } from "socket.io-client";
 
   function createGame() {
-      const socket = io("http://localhost:8080/", { withCredentials: true });
-      socket.emit("createGame", {}, (response)=>{
-        window.localStorage.code = response;
-        goto("/game");
-      })
+    const socket = io("http://localhost:8080/", { withCredentials: true });
+    socket.emit("createGame", {}, (response) => {
+      window.localStorage.code = response;
+      goto("/game");
+    });
   }
   function joinGame() {
     goto("/join");

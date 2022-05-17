@@ -93,7 +93,6 @@
         <button on:click={() => goto("/")} class="btn">Exit</button>
       </div>
     </div>
-    <Board />
     <br />
     <div class="bg-white p-4 rounded-lg ">
       <h1 class="text-2xl font-bold">Tic Tac Chat</h1>
