@@ -1,5 +1,10 @@
 import { writable, derived } from "svelte/store";
 
 export const isAuthenticated = writable(false);
-export const user = writable({});
+interface user{
+    name?: string;
+    uid?:string;
+}
+
+export const user = writable({} as user);
 

@@ -16,8 +16,8 @@
     self?: boolean;
   }
   let chatMsgs: ChatMessage[] = [];
-
   let revealCode: boolean = false;
+
   const socket = io("http://localhost:8080/", { withCredentials: true });
 
   socket.on("playerJoin", (data) => {
