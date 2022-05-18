@@ -43,31 +43,6 @@
     console.log("Sending " + chatMsg);
     chatMsg = "";
   }
-  let loginSchema = object({
-    name: string()
-      .required("Please enter a message.")
-      .min(1, "Your message must be longer than 1 character.")
-      .max(100, "Your message must be shorther than 30 characters")
-      .nullable(),
-  });
-  async function validateChat() {
-    try {
-      await loginSchema.validate({ chatMsg }, { abortEarly: false });
-      return true;
-    } catch (err) {
-      console.log(err)
-      toast.push({
-        msg:"Invalid chat mesage",
-        duration: 4000,
-        pausable: true,
-        theme: {
-          "--toastBackground": "#F56565",
-          "--toastBarBackground": "#C53030",
-        },
-      });
-      return false;
-    }
-  }
 </script>
 
 <div class="flex justify-center">
