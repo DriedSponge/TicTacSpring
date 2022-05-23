@@ -7,9 +7,13 @@
   import Loading from "$lib/Loading.svelte";
   import axios from "axios";
   import { goto } from "$app/navigation";
+  import { io } from "socket.io-client";
   let gameId: string = "";
+  const socket = io("http://localhost:8080/", { withCredentials: true });
+
   function joinGame() {
     // @ts-ignore
+    socket.emit("joinGame",{gameId:gameId})
     user.gameId = gameId;
     window.localStorage.setItem("code", gameId);
     goto("/game");

@@ -13,10 +13,12 @@ export class GameGateway {
 
   @SubscribeMessage('joinGame')
   @UseGuards(SessionwsGuard)
-  handleMessage(socket: Socket, data: any): string {
+  joinGame(socket: Socket, data: any): string {
     // TO-DO: Should set session game id and be using it instead of sending it over network where it needs to be validated.
     // Should actucally create game here
-    
+    console.log(data)
+    //@ts-ignore
+    socket.handshake.session.gameId = data.gameId;
     // @ts-ignore
     socket.join(socket.handshake.session.gameId)
     // @ts-ignore
@@ -24,9 +26,10 @@ export class GameGateway {
     return 'Hello world!';
   }
 
+
   @SubscribeMessage('createGame')
   @UseGuards(SessionwsGuard)
-  async handleGameCreation(socket: Socket, data: any): Promise<number> {
+  async createGame(socket: Socket, data: any): Promise<number> {
     // @ts-ignore
     if ( socket.handshake.session.gameId) {
       //@ts-ignore
@@ -38,9 +41,10 @@ export class GameGateway {
     socket.join(game.code.toString())
     return game.code;
   }
+
   @SubscribeMessage('chatMessage')
   @UseGuards(SessionwsGuard)
-  handleChat(socket: Socket, payload: any): string  {
+  chatMessage(socket: Socket, payload: any): string  {
     console.log(payload);
     // Note to self. When using socket.to(), it sends the message to the room from the socket, so the person who sent the message does not receive it
     // Use io.to() to send to all clients connected to room

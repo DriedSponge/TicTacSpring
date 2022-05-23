@@ -32,7 +32,7 @@
 
   onMount(async () => {
     code = window.localStorage.getItem("code");
-    socket.emit("joinGame", { gameId: code });
+    socket.emit("getGameInfo", { gameId: code });
   });
   onDestroy(async () => {
     socket.close();
