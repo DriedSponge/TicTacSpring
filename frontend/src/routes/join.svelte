@@ -8,16 +8,19 @@
   import axios from "axios";
   import { goto } from "$app/navigation";
   import { io } from "socket.io-client";
+import { onDestroy } from "svelte";
   let gameId: string = "";
   const socket = io("http://localhost:8080/", { withCredentials: true });
 
   function joinGame() {
     // @ts-ignore
     socket.emit("joinGame",{gameId:gameId})
-    user.gameId = gameId;
-    window.localStorage.setItem("code", gameId);
+    $user.gameId = gameId;
     goto("/game");
   }
+  onDestroy(async () => {
+    socket.close();
+  });
 </script>
 
 <svelte:head>

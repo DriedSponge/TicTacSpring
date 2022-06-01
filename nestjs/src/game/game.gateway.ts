@@ -29,7 +29,7 @@ export class GameGateway {
 
   @SubscribeMessage('createGame')
   @UseGuards(SessionwsGuard)
-  async createGame(socket: Socket, data: any): Promise<number> {
+  async createGame(socket: Socket, data: any): Promise<string> {
     // @ts-ignore
     if ( socket.handshake.session.gameId) {
       //@ts-ignore
@@ -37,16 +37,16 @@ export class GameGateway {
     }
     const game: Game = await this.gameService.createGame();
     // @ts-ignore
-    socket.handshake.session.gameId = game.code;
+    socket.handshake.session.gameId = game.code.toString();
     socket.join(game.code.toString())
-    return game.code;
+    return game.code.toString();
   }
 
   @SubscribeMessage('chatMessage')
   @UseGuards(SessionwsGuard)
   chatMessage(socket: Socket, payload: any): string  {
     console.log(payload);
-    // Note to self. When using socket.to(), it sends the message to the room from the socket, so the person who sent the message does not receive it
+    // Note to self: When using socket.to(), it sends the message to the room from the socket, so the person who sent the message does not receive it
     // Use io.to() to send to all clients connected to room
     // @ts-ignore
     socket.to(socket.handshake.session.gameId).emit("chatEvent",{content:payload.content, from:socket.handshake.session.name})

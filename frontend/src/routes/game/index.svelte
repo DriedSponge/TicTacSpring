@@ -6,20 +6,22 @@
   import { onMount, onDestroy } from "svelte";
   import { object, string } from "yup";
   import { toast } from "@zerodevx/svelte-toast";
+  import { isAuthenticated, user } from "$lib/store";
+
+  const socket = io("http://localhost:8080/", { withCredentials: true });
 
   let chatMsg: string = "";
   let opponent: string = "";
   let code: string = "";
+  let chatMsgs: ChatMessage[] = [];
+  let revealCode: boolean = false;
+
   interface ChatMessage {
     from: string;
     content: string;
     self?: boolean;
   }
-  let chatMsgs: ChatMessage[] = [];
-  let revealCode: boolean = false;
-
-  const socket = io("http://localhost:8080/", { withCredentials: true });
-
+ 
   socket.on("playerJoin", (data) => {
     opponent = data.player;
   });
@@ -30,10 +32,13 @@
     console.log(chatMsgs);
   });
 
+  // Fetch user Stuff on Load.
   onMount(async () => {
-    code = window.localStorage.getItem("code");
+    code = $user.gameId;
     socket.emit("getGameInfo", { gameId: code });
   });
+
+
   onDestroy(async () => {
     socket.close();
   });
