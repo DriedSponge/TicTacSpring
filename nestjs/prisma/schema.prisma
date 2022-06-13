@@ -13,7 +13,7 @@ datasource db {
 model User {
   id            Int      @id @default(autoincrement())
   uid           String   @unique
-  name          String   
+  name          String
   password      String?
   email         String?  @unique
   google_id     String?
@@ -21,7 +21,6 @@ model User {
   updated_at    DateTime @updatedAt
   verifiedEmail Boolean  @default(false)
   guest_account Boolean  @default(false)
-  game          Game?    @relation(fields: [gameId], references: [id])
   gameId        Int?
 
   @@index([id])
@@ -30,8 +29,10 @@ model User {
 model Game {
   id         Int      @id @default(autoincrement())
   code       Int      @unique
-  players    User[]
+  x          String?
+  o          String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
   @@index([id])
 }

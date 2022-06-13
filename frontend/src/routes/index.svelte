@@ -13,7 +13,7 @@
 
   function createGame() {
     const socket = io("http://localhost:8080/", { withCredentials: true });
-    socket.emit("createGame", {}, (response) => {
+    socket.emit("game:create", (response) => {
       $user.gameId = response;
       window.localStorage.setItem("gameId",response)
       goto("/game");

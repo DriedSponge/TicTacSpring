@@ -25,7 +25,7 @@
     self?: boolean;
   }
 
-  socket.on("playerJoin", (data) => {
+  socket.on("game:playerJoined", (data) => {
     opponent = data.player;
   });
   socket.on("chatEvent", (data) => {
@@ -41,7 +41,11 @@
   onMount(async () => {
     $user.gameId = window.localStorage.getItem("gameId");
     code = $user.gameId;
-    socket.emit("joinGame", { gameId: code }, {}, (response) => {});
+    socket.emit("game:connect", (response) => {
+      if(!response.success){
+        goto("/join")
+      }
+    });
   });
 
   function handleTurn(event) {

@@ -13,9 +13,16 @@
   const socket = io("http://localhost:8080/", { withCredentials: true });
 
   function joinGame() {
-    window.localStorage.setItem("gameId", gameId);
-    $user.gameId = gameId;
-    goto("/game");
+    socket.emit("game:join", { gameId: gameId }, (response) => {
+      if (!response.success) {
+        gameId = ""
+        console.log("Game not found!")
+      } else {
+        window.localStorage.setItem("gameId", gameId);
+        $user.gameId = gameId;
+        goto("/game");
+      }
+    });
   }
   onDestroy(async () => {
     socket.close();
