@@ -38,7 +38,6 @@ export class GameGateway {
     const game: Game = await this.gameService.createGame();
     // @ts-ignore
     socket.handshake.session.gameId = game.code.toString();
-    socket.join(game.code.toString())
     return game.code.toString();
   }
 

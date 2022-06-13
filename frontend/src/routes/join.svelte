@@ -13,8 +13,7 @@ import { onDestroy } from "svelte";
   const socket = io("http://localhost:8080/", { withCredentials: true });
 
   function joinGame() {
-    // @ts-ignore
-    socket.emit("joinGame",{gameId:gameId})
+    window.localStorage.setItem("gameId",gameId);
     $user.gameId = gameId;
     goto("/game");
   }

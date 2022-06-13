@@ -34,8 +34,8 @@
 
   // Fetch user Stuff on Load.
   onMount(async () => {
-    code = $user.gameId;
-    socket.emit("getGameInfo", { gameId: code });
+    code =   window.localStorage.getItem("gameId");
+    socket.emit("joinGame", { gameId: code });
   });
 
 

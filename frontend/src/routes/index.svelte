@@ -15,6 +15,7 @@
     const socket = io("http://localhost:8080/", { withCredentials: true });
     socket.emit("createGame", {}, (response) => {
       $user.gameId = response;
+      window.localStorage.setItem("gameId",response)
       goto("/game");
     });
   }
