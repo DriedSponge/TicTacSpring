@@ -7,9 +7,12 @@
   import { object, string } from "yup";
   import { toast } from "@zerodevx/svelte-toast";
   import { isAuthenticated, user } from "$lib/store";
+  import type { Tile } from "$lib/Tile";
 
   const socket = io("http://localhost:8080/", { withCredentials: true });
-
+  let data: Tile[][];
+  let winner :string = "";
+  let tied : boolean = false;
   let chatMsg: string = "";
   let opponent: string = "";
   let code: string = "";
@@ -21,24 +24,29 @@
     content: string;
     self?: boolean;
   }
- 
+
   socket.on("playerJoin", (data) => {
     opponent = data.player;
   });
-
   socket.on("chatEvent", (data) => {
     console.log("Received Chat Message From " + data.from);
     chatMsgs = [...chatMsgs, { from: data.from, content: data.content }];
     console.log(chatMsgs);
   });
-
+  socket.on("moveMade", (moveData) => {
+    console.log(moveData.move);
+    data = moveData.move;
+  });
   // Fetch user Stuff on Load.
   onMount(async () => {
-    code =   window.localStorage.getItem("gameId");
-    socket.emit("joinGame", { gameId: code });
+    $user.gameId = window.localStorage.getItem("gameId");
+    code = $user.gameId;
+    socket.emit("joinGame", { gameId: code }, {}, (response) => {});
   });
 
-
+  function handleTurn(event) {
+    socket.emit("makeMove", { move: event.detail.data });
+  }
   onDestroy(async () => {
     socket.close();
   });
@@ -73,6 +81,13 @@
         <button on:click={() => goto("/")} class="btn">Exit</button>
       </div>
     </div>
+    <br />
+    <Board
+      currentPlayer="X"
+      on:turn={handleTurn}
+      bind:data
+      gameOver={winner == "X" || winner == "O" || tied}
+    />
     <br />
     <div class="bg-white p-4 rounded-lg ">
       <h1 class="text-2xl font-bold">Tic Tac Chat</h1>

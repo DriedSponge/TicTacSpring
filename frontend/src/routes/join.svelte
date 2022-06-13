@@ -8,12 +8,12 @@
   import axios from "axios";
   import { goto } from "$app/navigation";
   import { io } from "socket.io-client";
-import { onDestroy } from "svelte";
+  import { onDestroy } from "svelte";
   let gameId: string = "";
   const socket = io("http://localhost:8080/", { withCredentials: true });
 
   function joinGame() {
-    window.localStorage.setItem("gameId",gameId);
+    window.localStorage.setItem("gameId", gameId);
     $user.gameId = gameId;
     goto("/game");
   }
@@ -51,6 +51,7 @@ import { onDestroy } from "svelte";
             </div>
           </div>
         </form>
+        <a href="/">Go Back</a>
       {/if}
     {/await}
   </div>

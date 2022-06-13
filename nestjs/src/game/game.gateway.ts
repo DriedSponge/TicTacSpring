@@ -25,6 +25,15 @@ export class GameGateway {
     socket.to(socket.handshake.session.gameId).emit("playerJoin",{player:socket.handshake.session.name})
     return 'Hello world!';
   }
+  @SubscribeMessage('makeMove')
+  @UseGuards(SessionwsGuard)
+  makeMove(socket: Socket, data: any): string {
+    console.log(data)
+    // @ts-ignore
+    socket.to(socket.handshake.session.gameId).emit("moveMade",{player:socket.handshake.session.name,move:data.move})
+    return 'Hello world!';
+  }
+
 
 
   @SubscribeMessage('createGame')
