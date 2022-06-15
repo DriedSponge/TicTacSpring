@@ -16,7 +16,7 @@
     socket.emit("game:join", { gameId: gameId }, (response) => {
       if (!response.success) {
         gameId = ""
-        console.log("Game not found!")
+        console.log(response.message)
       } else {
         window.localStorage.setItem("gameId", gameId);
         $user.gameId = gameId;

@@ -17,6 +17,12 @@ export class GameGateway {
     try {
       let game: Game = await this.gameService.getGameByCode(data.gameId);
       //@ts-ignore
+      let name:stirng = socket.handshake.session.name;
+      if(game.o != null){
+        return { "success": false, message:"Game is full!" }
+      }
+      await this.gameService.prisma.game.update({where:{code:game.code},data:{o:name}})
+      //@ts-ignore
       socket.handshake.session.gameId = data.gameId;
       //@ts-ignore
       socket.join(socket.handshake.session.gameId)
@@ -24,6 +30,7 @@ export class GameGateway {
       socket.to(socket.handshake.session.gameId).emit("playerJoin", { player: socket.handshake.session.name })
       return { "success": true}
     } catch (e) {
+      console.log(e)
       return { sucess: false }
     }
   }
@@ -31,16 +38,21 @@ export class GameGateway {
   @UseGuards(SessionwsGuard)
   async connectGame(socket: Socket, data: any): Promise<Object> {
     try {
-      let game: Game = await this.gameService.getGameByCode(data.gameId);
       //@ts-ignore
-      socket.handshake.session.gameId = data.gameId;
+      let game: Game = await this.gameService.getGameByCode(socket.handshake.session.gameId);
+      //@ts-ignore
+      let name:stirng = socket.handshake.session.name;
+      
+      //@ts-ignore
+      socket.handshake.session.gameId = socket.handshake.session.gameId;
       //@ts-ignore
       socket.join(socket.handshake.session.gameId)
       //@ts-ignore
-      socket.to(socket.handshake.session.gameId).emit("playerJoin", { player: socket.handshake.session.name })
+      socket.to(socket.handshake.session.gameId).emit("playerJoin", { player: name })
+
       return { "success": true, x: game }
     } catch (e) {
-      return { sucess: false }
+      return { sucess: false, message:"Game not found!" }
     }
   }
   @SubscribeMessage('makeMove')
@@ -62,9 +74,11 @@ export class GameGateway {
       //@ts-ignore
       await this.gameService.deleteGameByCode(socket.handshake.session.gameId)
     }
-    const game: Game = await this.gameService.createGame();
+    //@ts-ignore
+    const game: Game = await this.gameService.createGame(socket.handshake.session.name);
     // @ts-ignore
     socket.handshake.session.gameId = game.code.toString();
+   
     return game.code.toString();
   }
 

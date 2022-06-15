@@ -28,9 +28,10 @@ model User {
 
 model Game {
   id         Int      @id @default(autoincrement())
-  code       Int      @unique
+  code       String      @unique
   x          String?
   o          String?
+  turn       String? @default("x")
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 

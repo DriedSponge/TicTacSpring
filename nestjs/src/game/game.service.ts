@@ -4,10 +4,10 @@ import { Prisma, PrismaClient, Game } from '@prisma/client';
 
 @Injectable()
 export class GameService {
-    constructor(private prisma: PrismaService) {}
+    constructor(public prisma: PrismaService) {}
 
-    async createGame(): Promise<Game>{
-        let code:number = Math.floor(10000 + Math.random() * 90000);
+    async createGame(creator: string): Promise<Game>{
+        let code:string = Math.floor(10000 + Math.random() * 90000).toString();
         let found: boolean = false;
         while(!found){
             try {
@@ -18,13 +18,13 @@ export class GameService {
             }catch{
                 found = true
                 console.debug("Code dupe not found. Creating game instance!")
-                return this.prisma.game.create({data:{code:code}});
+                return this.prisma.game.create({data:{code:code,x:creator}});
             }
         }
         
     }
 
-    async getGameByCode(code: number): Promise<Game>{
+    async getGameByCode(code: string): Promise<Game>{
         return this.prisma.game.findFirst({
             where:{
                 code:code
@@ -33,7 +33,7 @@ export class GameService {
         })
     }
 
-    async deleteGameByCode(code:number){
+    async deleteGameByCode(code:string){
         console.debug("Deleting game: "+code)
         try{
             await this.prisma.game.delete({where:{code:code}})

@@ -18,8 +18,8 @@
     <button
       disabled={tile.value != "-" || gameOver}
       class="tttbtn"
-      class:x={tile.value == "X"}
-      class:o={tile.value == "O"}
+      class:x={tile.value.toLocaleLowerCase() == "x"}
+      class:o={tile.value.toLocaleLowerCase() == "o"}
       class:winner={tile.winner}
       class:taken={tile.value != "-"}
       on:click={(e) => {
