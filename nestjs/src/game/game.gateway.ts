@@ -27,7 +27,7 @@ export class GameGateway {
       //@ts-ignore
       socket.join(socket.handshake.session.gameId)
       //@ts-ignore
-      socket.to(socket.handshake.session.gameId).emit("playerJoin", { player: socket.handshake.session.name })
+      socket.to(socket.handshake.session.gameId).emit("game:playerJoined", { player: socket.handshake.session.name })
       return { "success": true}
     } catch (e) {
       console.log(e)
