@@ -25,6 +25,8 @@ export class GameGateway {
       await this.gameService.prisma.game.update({ where: { code: game.code }, data: { o: name } })
       //@ts-ignore
       socket.handshake.session.gameId = data.gameId;
+      // @ts-ignore
+    socket.handshake.session.symbol = "o";
       //@ts-ignore
       socket.handshake.session.save()
       //@ts-ignore
@@ -48,6 +50,8 @@ export class GameGateway {
     const game: Game = await this.gameService.createGame(socket.handshake.session.name);
     // @ts-ignore
     socket.handshake.session.gameId = game.code;
+    // @ts-ignore
+    socket.handshake.session.symbol = "x";
     //@ts-ignore
     socket.handshake.session.save()
     return game.code;
