@@ -45,6 +45,7 @@
       if(!response.success){
         goto("/join")
       }
+      opponent = response.opponent;
     });
   });
 

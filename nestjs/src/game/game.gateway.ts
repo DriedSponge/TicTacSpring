@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { SessionGuard } from 'src/auth/session.guard';
 import { UseGuards } from '@nestjs/common';
@@ -63,8 +64,11 @@ export class GameGateway {
       console.log(socket.handshake.session);
       //@ts-ignore
       socket.join(socket.handshake.session.gameId)
-
-      return { "success": true, x: game }
+      let opponent:string = "";
+      if(game.o == socket.handshake.session.name){
+        opponent = game.x
+      }
+      return { "success": true, opponent: opponent }
     } catch (e) {
       return { sucess: false, message: "Game not found!" }
     }
