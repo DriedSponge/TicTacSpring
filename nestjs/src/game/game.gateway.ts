@@ -17,54 +17,23 @@ export class GameGateway {
     try {
       let game: Game = await this.gameService.getGameByCode(data.gameId);
       //@ts-ignore
-      let name:stirng = socket.handshake.session.name;
-      if(game.o != null){
-        return { "success": false, message:"Game is full!" }
+      let name: stirng = socket.handshake.session.name;
+      if (game.o != null) {
+        return { "success": false, message: "Game is full!" }
       }
-      await this.gameService.prisma.game.update({where:{code:game.code},data:{o:name}})
+      await this.gameService.prisma.game.update({ where: { code: game.code }, data: { o: name } })
       //@ts-ignore
       socket.handshake.session.gameId = data.gameId;
       //@ts-ignore
-      socket.join(socket.handshake.session.gameId)
+      socket.handshake.session.save()
       //@ts-ignore
-      socket.to(socket.handshake.session.gameId).emit("game:playerJoined", { player: socket.handshake.session.name })
-      return { "success": true}
+      socket.to(data.gameId).emit("game:playerJoined", { player: socket.handshake.session.name });
+      return { "success": true }
     } catch (e) {
       console.log(e)
-      return { sucess: false }
+      return { sucess: false, message: "Game not found!" }
     }
   }
-  @SubscribeMessage('game:connect')
-  @UseGuards(SessionwsGuard)
-  async connectGame(socket: Socket, data: any): Promise<Object> {
-    try {
-      //@ts-ignore
-      let game: Game = await this.gameService.getGameByCode(socket.handshake.session.gameId);
-      //@ts-ignore
-      let name:stirng = socket.handshake.session.name;
-      
-      //@ts-ignore
-      socket.handshake.session.gameId = socket.handshake.session.gameId;
-      //@ts-ignore
-      socket.join(socket.handshake.session.gameId)
-      //@ts-ignore
-      socket.to(socket.handshake.session.gameId).emit("playerJoin", { player: name })
-
-      return { "success": true, x: game }
-    } catch (e) {
-      return { sucess: false, message:"Game not found!" }
-    }
-  }
-  @SubscribeMessage('makeMove')
-  @UseGuards(SessionwsGuard)
-  makeMove(socket: Socket, data: any): string {
-    console.log(data)
-    // @ts-ignore
-    socket.to(socket.handshake.session.gameId).emit("moveMade", { player: socket.handshake.session.name, move: data.move })
-    return 'Hello world!';
-  }
-
-
 
   @SubscribeMessage('game:create')
   @UseGuards(SessionwsGuard)
@@ -77,10 +46,42 @@ export class GameGateway {
     //@ts-ignore
     const game: Game = await this.gameService.createGame(socket.handshake.session.name);
     // @ts-ignore
-    socket.handshake.session.gameId = game.code.toString();
-   
-    return game.code.toString();
+    socket.handshake.session.gameId = game.code;
+    //@ts-ignore
+    socket.handshake.session.save()
+    return game.code;
   }
+
+  @SubscribeMessage('game:connect')
+  @UseGuards(SessionwsGuard)
+  async connectGame(socket: Socket, data: any): Promise<Object> {
+    try {
+      //@ts-ignore
+      let game: Game = await this.gameService.getGameByCode(socket.handshake.session.gameId);
+
+      //@ts-ignore
+      console.log(socket.handshake.session);
+      //@ts-ignore
+      socket.join(socket.handshake.session.gameId)
+
+      return { "success": true, x: game }
+    } catch (e) {
+      return { sucess: false, message: "Game not found!" }
+    }
+  }
+
+  @SubscribeMessage('makeMove')
+  @UseGuards(SessionwsGuard)
+  makeMove(socket: Socket, data: any): string {
+    console.log(data)
+    // @ts-ignore
+    socket.to(socket.handshake.session.gameId).emit("moveMade", { player: socket.handshake.session.name, move: data.move })
+    return 'Hello world!';
+  }
+
+
+
+
 
   @SubscribeMessage('chatMessage')
   @UseGuards(SessionwsGuard)

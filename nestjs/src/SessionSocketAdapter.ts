@@ -18,10 +18,10 @@ export class SessionSocketAdapter extends IoAdapter {
             saveUninitialized: false,
             cookie: { maxAge: 86400000 }
         });
-        this.app.use(sessionMiddleware)
-        // convert a connect middleware to a Socket.IO middleware
+        this.app.use(sessionMiddleware)        // convert a connect middleware to a Socket.IO middleware
         const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
         server.use(sharedsession(sessionMiddleware))
+        
         return server;
     }
 }
