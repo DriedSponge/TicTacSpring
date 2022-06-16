@@ -8,7 +8,8 @@
   import { toast } from "@zerodevx/svelte-toast";
   import { isAuthenticated, user } from "$lib/store";
   import type { Tile } from "$lib/Tile";
-import { errorToast } from "$lib/Toast";
+  import { errorToast } from "$lib/Toast";
+  import { createClient } from "$lib/authService";
 
   const socket = io("http://localhost:8080/", { withCredentials: true });
   let data: Tile[][];
@@ -36,7 +37,7 @@ import { errorToast } from "$lib/Toast";
     errorToast(data.message);
     goto("/");
   });
-  
+
   socket.on("game:winner", (winData) => {
     data = winData.move;
     winner = winData.winner;
@@ -51,11 +52,15 @@ import { errorToast } from "$lib/Toast";
   });
   // Fetch user Stuff on Load.
   onMount(async () => {
+    if (!(await createClient())) {
+      goto("/");
+    }
     $user.gameId = window.localStorage.getItem("gameId");
     code = $user.gameId;
     socket.emit("game:connect", (response) => {
       if (!response.success) {
         goto("/");
+        errorToast("Sorry, there was an error getting you into the game!");
       }
       opponent = response.opponent;
       symbol = response.symbol;
@@ -70,7 +75,7 @@ import { errorToast } from "$lib/Toast";
       currentPlayer = response.turn;
       if (!response.success) {
         console.log(response.message);
-        errorToast(response.message)
+        errorToast(response.message);
         data = response.data;
       }
     });
