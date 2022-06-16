@@ -5,6 +5,7 @@
   import { object, string } from "yup";
   import { toast } from "@zerodevx/svelte-toast";
   import Loading from "./Loading.svelte";
+import { errorToast } from "./Toast";
   let name: string;
   let loading: boolean = false;
   let errors = { name };
@@ -47,15 +48,7 @@
       errors = err.inner.reduce((acc, err) => {
         return { ...acc, [err.path]: err.message };
       }, {});
-      toast.push({
-        msg: errors.name,
-        duration: 4000,
-        pausable: true,
-        theme: {
-          "--toastBackground": "#F56565",
-          "--toastBarBackground": "#C53030",
-        },
-      });
+      errorToast(errors.name);
       return false;
     }
   }

@@ -9,14 +9,16 @@
   import { goto } from "$app/navigation";
   import { io } from "socket.io-client";
   import { onDestroy } from "svelte";
+  import { errorToast } from "$lib/Toast";
   let gameId: string = "";
   const socket = io("http://localhost:8080/", { withCredentials: true });
 
   function joinGame() {
     socket.emit("game:join", { gameId: gameId }, (response) => {
       if (!response.success) {
-        gameId = ""
-        console.log(response.message)
+        gameId = "";
+        console.log(response.message);
+        errorToast(response.message);
       } else {
         window.localStorage.setItem("gameId", gameId);
         $user.gameId = gameId;

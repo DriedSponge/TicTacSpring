@@ -8,6 +8,7 @@
   import { toast } from "@zerodevx/svelte-toast";
   import { isAuthenticated, user } from "$lib/store";
   import type { Tile } from "$lib/Tile";
+import { errorToast } from "$lib/Toast";
 
   const socket = io("http://localhost:8080/", { withCredentials: true });
   let data: Tile[][];
@@ -32,6 +33,7 @@
   });
   socket.on("game:playerDisconnected", (data) => {
     console.log(data.message);
+    errorToast(data.message);
     goto("/");
   });
   
@@ -53,7 +55,7 @@
     code = $user.gameId;
     socket.emit("game:connect", (response) => {
       if (!response.success) {
-        goto("/join");
+        goto("/");
       }
       opponent = response.opponent;
       symbol = response.symbol;
@@ -68,6 +70,7 @@
       currentPlayer = response.turn;
       if (!response.success) {
         console.log(response.message);
+        errorToast(response.message)
         data = response.data;
       }
     });
