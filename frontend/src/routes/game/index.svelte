@@ -11,8 +11,10 @@
 
   const socket = io("http://localhost:8080/", { withCredentials: true });
   let data: Tile[][];
-  let winner :string = "";
-  let tied : boolean = false;
+  let symbol: string = "";
+  let winner: string = "";
+  let currentPlayer: string = "";
+  let tied: boolean = false;
   let chatMsg: string = "";
   let opponent: string = "";
   let code: string = "";
@@ -28,29 +30,43 @@
   socket.on("game:playerJoined", (data) => {
     opponent = data.player;
   });
+  socket.on("game:playerDisconnected", (data) => {
+    console.log(data.message);
+    goto("/");
+  });
   socket.on("chatEvent", (data) => {
     console.log("Received Chat Message From " + data.from);
     chatMsgs = [...chatMsgs, { from: data.from, content: data.content }];
-    console.log(chatMsgs);
   });
-  socket.on("moveMade", (moveData) => {
+  socket.on("game:moveMade", (moveData) => {
     console.log(moveData.move);
     data = moveData.move;
+    currentPlayer = moveData.turn;
   });
   // Fetch user Stuff on Load.
   onMount(async () => {
     $user.gameId = window.localStorage.getItem("gameId");
     code = $user.gameId;
     socket.emit("game:connect", (response) => {
-      if(!response.success){
-        goto("/join")
+      if (!response.success) {
+        goto("/join");
       }
       opponent = response.opponent;
+      symbol = response.symbol;
+      currentPlayer = response.turn;
     });
   });
 
   function handleTurn(event) {
-    socket.emit("makeMove", { move: event.detail.data });
+    console.log(event.detail.data);
+    currentPlayer = "o";
+    socket.emit("makeMove", { move: event.detail.data }, (response) => {
+      currentPlayer = response.turn;
+      if (!response.success) {
+        console.log(response.message);
+        data = response.data;
+      }
+    });
   }
   onDestroy(async () => {
     socket.close();
@@ -67,9 +83,13 @@
   <div class="container my-auto px-2 max-w-4xl">
     <div class="content-center text-center flex flex-col items-center">
       {#if opponent != ""}
-        <h1 class="text-white font-bold text-4xl my-5">
-          Playing Agaist {opponent}
-        </h1>
+        {#if currentPlayer != symbol}
+          <h1 class="text-white font-bold text-4xl my-5">
+            {opponent}'s Turn
+          </h1>
+        {:else}
+          <h1 class="text-white font-bold text-4xl my-5">Your Turn</h1>
+        {/if}
       {:else}
         <h1 class="text-white font-bold text-4xl my-5 animate-pulse">
           Waiting for opponent...
@@ -88,10 +108,13 @@
     </div>
     <br />
     <Board
-      currentPlayer="X"
+      currentPlayer={symbol}
+      disabled={symbol != currentPlayer || opponent == ""}
       on:turn={handleTurn}
       bind:data
-      gameOver={winner == "X" || winner == "O" || tied}
+      gameOver={winner.toLocaleLowerCase() == "x" ||
+        winner.toLocaleLowerCase() == "o" ||
+        tied}
     />
     <br />
     <div class="bg-white p-4 rounded-lg ">

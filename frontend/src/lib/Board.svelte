@@ -6,6 +6,7 @@
   );
   export let currentPlayer: string;
   export let gameOver: boolean = false;
+  export let disabled: boolean = false;
   const dispatch = createEventDispatcher();
   const handleClick = (e) => {
     dispatch("turn", { btnEvent: e, data: data });
@@ -16,7 +17,7 @@
   {#each data as row, index}
   {#each row as tile, index2}
     <button
-      disabled={tile.value != "-" || gameOver}
+      disabled={tile.value != "-" || gameOver || disabled}
       class="tttbtn"
       class:x={tile.value.toLocaleLowerCase() == "x"}
       class:o={tile.value.toLocaleLowerCase() == "o"}
@@ -36,8 +37,11 @@
 
 <style lang="postcss">
   .tttbtn {
-    @apply transition hover:bg-gray-300;
+    @apply transition hover:bg-gray-300 uppercase;
     @apply text-4xl md:text-5xl bg-white  px-3 py-2 w-full font-bold rounded-lg shadow-sm border-2 border-transparent;
+  }
+  .tttbtn:disabled{
+    @apply pointer-events-none
   }
   .taken{
     @apply text-white border-white border-2

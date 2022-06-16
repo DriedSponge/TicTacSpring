@@ -4,40 +4,52 @@ import { Prisma, PrismaClient, Game } from '@prisma/client';
 
 @Injectable()
 export class GameService {
-    constructor(public prisma: PrismaService) {}
+    constructor(public prisma: PrismaService) { }
 
-    async createGame(creator: string): Promise<Game>{
-        let code:string = Math.floor(10000 + Math.random() * 90000).toString();
+    async createGame(name: string, uid: string): Promise<Game> {
+        let code: string = Math.floor(10000 + Math.random() * 90000).toString();
         let found: boolean = false;
-        while(!found){
+        while (!found) {
             try {
                 console.debug("Looking for code dupe...")
                 await this.getGameByCode(code)
                 console.debug("Dupe found, trying a new code...")
                 Math.floor(10000 + Math.random() * 90000)
-            }catch{
+            } catch(e) {
                 found = true
                 console.debug("Code dupe not found. Creating game instance!")
-                return this.prisma.game.create({data:{code:code,x:creator}});
+                return await this.prisma.game.create({
+                    data: {
+                        code: code,
+                        players: {
+                            create: [
+                                { name: name, uid: uid, symbol: "x" }
+                            ]
+                        }
+                    }
+                });
             }
         }
-        
+
     }
 
-    async getGameByCode(code: string): Promise<Game>{
+    async getGameByCode(code: string): Promise<Game> {
         return this.prisma.game.findFirst({
-            where:{
-                code:code
+            where: {
+                code: code
+            },
+            include:{
+                players:true
             },
             rejectOnNotFound: true
         })
     }
 
-    async deleteGameByCode(code:string){
-        console.debug("Deleting game: "+code)
-        try{
-            await this.prisma.game.delete({where:{code:code}})
-        }catch{
+    async deleteGameByCode(code: string) {
+        console.debug("Deleting game: " + code)
+        try {
+            await this.prisma.game.delete({ where: { code: code } })
+        } catch {
             console.debug("Game to delete is already gone :).")
         }
     }

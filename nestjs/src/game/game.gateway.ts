@@ -5,12 +5,39 @@ import { UseGuards } from '@nestjs/common';
 import { SessionwsGuard } from 'src/sessionws.guard';
 import { Server, Socket } from 'socket.io';
 import { GameService } from './game.service';
-import { Game } from '@prisma/client';
+import { Game, Player } from '@prisma/client';
+import { OnGatewayDisconnect } from "@nestjs/websockets";
+
 @WebSocketGateway({ cors: { origin: ["http://localhost:3000"], credentials: true } })
-export class GameGateway {
+export class GameGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
   constructor(private readonly gameService: GameService) { }
+
+  @UseGuards(SessionwsGuard)
+  async handleDisconnect(socket: Socket) {
+    // @ts-ignore
+    if (socket.handshake.session.sockedId == socket.id) {
+      try {
+        // @ts-ignore
+        let player: Player = await this.gameService.prisma.player.findFirst({
+          where: {
+            uid: socket.handshake.session.uid
+          },
+          include: {
+            game: true
+          },
+          rejectOnNotFound: true
+        })
+        this.server.to(player.gameId).emit("game:playerDisconnected", { message: "Opponent disconnected. Game over!" })
+        await this.gameService.deleteGameByCode(player.gameId);
+      } catch (e) {
+        console.log("Game to delte not found.")
+      }
+    } else {
+      console.log("Person disconnected but was not in game.")
+    }
+  }
 
   @SubscribeMessage('game:join')
   @UseGuards(SessionwsGuard)
@@ -19,21 +46,28 @@ export class GameGateway {
       let game: Game = await this.gameService.getGameByCode(data.gameId);
       //@ts-ignore
       let name: stirng = socket.handshake.session.name;
-      if (game.o != null) {
+      if (game.players.length == 2) {
         return { "success": false, message: "Game is full!" }
       }
-      await this.gameService.prisma.game.update({ where: { code: game.code }, data: { o: name } })
-      //@ts-ignore
+
+      await this.gameService.prisma.game.update({
+        where: { code: game.code },
+        data: {
+          players: {
+            create: {
+              uid: socket.handshake.session.uid,
+              name: socket.handshake.session.name,
+              symbol: "o"
+            }
+          }
+        }
+      })
       socket.handshake.session.gameId = data.gameId;
-      // @ts-ignore
-    socket.handshake.session.symbol = "o";
-      //@ts-ignore
+      socket.handshake.session.symbol = "o";
       socket.handshake.session.save()
-      //@ts-ignore
       socket.to(data.gameId).emit("game:playerJoined", { player: socket.handshake.session.name });
       return { "success": true }
     } catch (e) {
-      console.log(e)
       return { sucess: false, message: "Game not found!" }
     }
   }
@@ -47,7 +81,8 @@ export class GameGateway {
       await this.gameService.deleteGameByCode(socket.handshake.session.gameId)
     }
     //@ts-ignore
-    const game: Game = await this.gameService.createGame(socket.handshake.session.name);
+    const game: Game = await this.gameService.createGame(socket.handshake.session.name, socket.handshake.session.uid);
+
     // @ts-ignore
     socket.handshake.session.gameId = game.code;
     // @ts-ignore
@@ -65,26 +100,52 @@ export class GameGateway {
       let game: Game = await this.gameService.getGameByCode(socket.handshake.session.gameId);
 
       //@ts-ignore
-      console.log(socket.handshake.session);
-      //@ts-ignore
       socket.join(socket.handshake.session.gameId)
-      let opponent:string = "";
-      if(game.o == socket.handshake.session.name){
-        opponent = game.x
+      let opponent: string = "";
+      if (game.players[1] != undefined) {
+        opponent = game.players[0].name
       }
-      return { "success": true, opponent: opponent }
+      socket.handshake.session.sockedId = socket.id;
+      //@ts-ignore
+      socket.handshake.session.save()
+      return { "success": true, opponent: opponent, symbol: socket.handshake.session.symbol, turn: game.turn }
     } catch (e) {
+      console.log(e)
       return { sucess: false, message: "Game not found!" }
     }
   }
 
   @SubscribeMessage('makeMove')
   @UseGuards(SessionwsGuard)
-  makeMove(socket: Socket, data: any): string {
-    console.log(data)
-    // @ts-ignore
-    socket.to(socket.handshake.session.gameId).emit("moveMade", { player: socket.handshake.session.name, move: data.move })
-    return 'Hello world!';
+  async makeMove(socket: Socket, data: any): Promise<Object> {
+
+    let player: Player = await this.gameService.prisma.player.findFirst({
+      where: {
+        uid: socket.handshake.session.uid
+      },
+      include: {
+        game: true
+      },
+    })
+    
+    if(player.symbol != player.game.turn){
+      return { success: false, message:"It's not your turn!", turn:player.game.turn, data: JSON.parse(player.game.gameSate)}
+    }
+
+    let nextTurn: string = player.symbol == "x" ? "o" : "x"
+    
+    await this.gameService.prisma.game.update({
+      where: {
+        code: player.gameId
+      },
+      data: {
+        turn: nextTurn,
+        gameState: JSON.stringify(data.move)
+      }
+    })
+
+    socket.to(player.gameId).emit("game:moveMade", { player: socket.handshake.session.name, move: data.move, turn: nextTurn })
+    return {success: true, turn: nextTurn };
   }
 
 

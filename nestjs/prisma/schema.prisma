@@ -25,13 +25,24 @@ model User {
 
   @@index([id])
 }
+model Player {
+  id         Int      @id @default(autoincrement())
+  name       String    
+  symbol     String
+  uid        String
+  game       Game @relation(fields: [gameId], references: [code], onDelete: Cascade)
+  gameId     String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
+  @@index([id])
+}
 model Game {
   id         Int      @id @default(autoincrement())
   code       String      @unique
-  x          String?
-  o          String?
+  players    Player[]
   turn       String? @default("x")
+  gameState  String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
