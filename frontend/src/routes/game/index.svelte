@@ -14,7 +14,7 @@
   let symbol: string = "";
   let winner: string = "";
   let currentPlayer: string = "";
-  let tied: boolean = false;
+  let draw: boolean = false;
   let chatMsg: string = "";
   let opponent: string = "";
   let code: string = "";
@@ -34,12 +34,16 @@
     console.log(data.message);
     goto("/");
   });
-  socket.on("chatEvent", (data) => {
-    console.log("Received Chat Message From " + data.from);
-    chatMsgs = [...chatMsgs, { from: data.from, content: data.content }];
+  
+  socket.on("game:winner", (winData) => {
+    data = winData.move;
+    winner = winData.winner;
+  });
+  socket.on("game:draw", (drawData) => {
+    data = drawData.move;
+    draw = true;
   });
   socket.on("game:moveMade", (moveData) => {
-    console.log(moveData.move);
     data = moveData.move;
     currentPlayer = moveData.turn;
   });
@@ -72,29 +76,40 @@
     socket.close();
   });
   function sendMsg() {
-    socket.emit("chatMessage", { content: chatMsg, gameId: code });
+    socket.emit("game:chat", { content: chatMsg, gameId: code });
     chatMsgs = [...chatMsgs, { from: "You", content: chatMsg, self: true }];
+    console.log(chatMsgs);
     console.log("Sending " + chatMsg);
     chatMsg = "";
   }
+  socket.on("game:chat", (data) => {
+    console.log("Received Chat Message From " + data.from);
+    chatMsgs = [...chatMsgs, { from: data.from, content: data.content }];
+  });
 </script>
 
 <div class="flex justify-center">
   <div class="container my-auto px-2 max-w-4xl">
     <div class="content-center text-center flex flex-col items-center">
-      {#if opponent != ""}
-        {#if currentPlayer != symbol}
-          <h1 class="text-white font-bold text-4xl my-5">
+      <h1 class="text-white font-bold text-4xl my-5">
+        {#if opponent != ""}
+          {#if winner != ""}
+            {#if winner == $user.name}
+              You won!
+            {:else}
+              {winner} won! You Suck
+            {/if}
+          {:else if draw}
+            It's a tie! You both suck!
+          {:else if currentPlayer != symbol}
             {opponent}'s Turn
-          </h1>
+          {:else}
+            Your Turn
+          {/if}
         {:else}
-          <h1 class="text-white font-bold text-4xl my-5">Your Turn</h1>
-        {/if}
-      {:else}
-        <h1 class="text-white font-bold text-4xl my-5 animate-pulse">
           Waiting for opponent...
-        </h1>
-      {/if}
+        {/if}
+      </h1>
       <div class="my-5 w-full">
         <button class="btn" on:click={() => (revealCode = !revealCode)}>
           {#if revealCode}
@@ -114,7 +129,7 @@
       bind:data
       gameOver={winner.toLocaleLowerCase() == "x" ||
         winner.toLocaleLowerCase() == "o" ||
-        tied}
+        draw}
     />
     <br />
     <div class="bg-white p-4 rounded-lg ">

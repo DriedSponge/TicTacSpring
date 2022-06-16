@@ -7,6 +7,7 @@ import { Server, Socket } from 'socket.io';
 import { GameService } from './game.service';
 import { Game, Player } from '@prisma/client';
 import { OnGatewayDisconnect } from "@nestjs/websockets";
+import { Tile } from './Tile';
 
 @WebSocketGateway({ cors: { origin: ["http://localhost:3000"], credentials: true } })
 export class GameGateway implements OnGatewayDisconnect {
@@ -108,7 +109,7 @@ export class GameGateway implements OnGatewayDisconnect {
       socket.handshake.session.sockedId = socket.id;
       //@ts-ignore
       socket.handshake.session.save()
-      return { "success": true, opponent: opponent, symbol: socket.handshake.session.symbol, turn: game.turn }
+      return { "success": true, opponent: opponent, symbol: socket.handshake.session.symbol, turn: game.turn, data: JSON.parse(game.gameState) }
     } catch (e) {
       console.log(e)
       return { sucess: false, message: "Game not found!" }
@@ -131,7 +132,15 @@ export class GameGateway implements OnGatewayDisconnect {
     if(player.symbol != player.game.turn){
       return { success: false, message:"It's not your turn!", turn:player.game.turn, data: JSON.parse(player.game.gameSate)}
     }
-
+    // Check for wins.
+    if(Tile.checkWinner(player.symbol,data.move)){
+      console.log("We have a winner!")
+      this.server.to(player.gameId).emit("game:winner",{ winner: player.name, move: data.move})
+      return {success: true};
+    }else if(Tile.checkTie(data.move)){
+      this.server.to(player.gameId).emit("game:draw",{ move: data.move})
+      return{success: true}
+    }
     let nextTurn: string = player.symbol == "x" ? "o" : "x"
     
     await this.gameService.prisma.game.update({
@@ -144,7 +153,7 @@ export class GameGateway implements OnGatewayDisconnect {
       }
     })
 
-    socket.to(player.gameId).emit("game:moveMade", { player: socket.handshake.session.name, move: data.move, turn: nextTurn })
+    socket.to(player.gameId).emit("game:moveMade", { player:player.name, move: data.move, turn: nextTurn })
     return {success: true, turn: nextTurn };
   }
 
@@ -152,14 +161,14 @@ export class GameGateway implements OnGatewayDisconnect {
 
 
 
-  @SubscribeMessage('chatMessage')
+  @SubscribeMessage('game:chat')
   @UseGuards(SessionwsGuard)
   chatMessage(socket: Socket, payload: any): string {
     console.log(payload);
     // Note to self: When using socket.to(), it sends the message to the room from the socket, so the person who sent the message does not receive it
     // Use io.to() to send to all clients connected to room
     // @ts-ignore
-    socket.to(socket.handshake.session.gameId).emit("chatEvent", { content: payload.content, from: socket.handshake.session.name })
+    socket.to(socket.handshake.session.gameId).emit("game:chat", { content: payload.content, from: socket.handshake.session.name })
     //@ts-ignore
     return "Message Sent";
   }

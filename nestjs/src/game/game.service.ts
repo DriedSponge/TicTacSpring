@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, PrismaClient, Game } from '@prisma/client';
+import { Tile } from './Tile';
 
 @Injectable()
 export class GameService {
@@ -21,6 +22,9 @@ export class GameService {
                 return await this.prisma.game.create({
                     data: {
                         code: code,
+                        gameState:JSON.stringify(Array.from({ length: 3 }, () => 
+                        Array.from({length:3}, () => new Tile("-"))
+                        )),
                         players: {
                             create: [
                                 { name: name, uid: uid, symbol: "x" }
